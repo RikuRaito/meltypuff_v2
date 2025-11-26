@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -15,6 +14,38 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  email String
+  email String @unique
+  passwd String
+  phoneNumber String @map("phone_number")
+  postCode String @map("post_code")
+  address1 String @map("address_1")
+  address2 String @map("address_2")
+}
+
+model Product_Non {
+  id Int @id @default(autoincrement())
+  name String
+  display_name String
+  image_path String
+  price Int
+}
+
+model Product_Nic {
+  id Int @id @default(autoincrement()) 
+  name String 
+  displayName String @map("display_name")
+  imagePath String @map("image_path")
+  price Int
+}
+
+model Coupon {
+  id Int @id @default(autoincrement())
+  code String @unique
+  finalPriceRate Decimal @map("final_price_rate")
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+  inAppId String @map("in_app_id")
   passwd String
 }
