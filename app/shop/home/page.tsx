@@ -59,7 +59,7 @@ export default function Page() {
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
             こだわり抜いたフレーバーと確かな品質。あなたのライフスタイルに合う
-            ベイプを、今すぐ見つけてください。
+            ベイプがここで見つかる。
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Link
