@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Header from "@/app/components/layouts/header/Header";
 import { useState } from "react";
+import Link from "next/link";
 
 const heroContents = {
   video: {
@@ -22,12 +23,11 @@ const heroContents = {
 } as const;
 
 export default function Page() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState("nonNicotine");
   const tabButtonClass = (tab: string) =>
     `w-full rounded-xl border-2 border-transparent hover:bg-[#b43353] hover:text-white px-5 py-3 text-base font-semibold transition-colors duration-200 sm:w-auto ${
       activeTab === tab
-        ? "border-neutral-900 text-neutral-900"
+        ? "border-neutral-900 text-neutral-900 shadow-xl rounded-xl"
         : "text-neutral-500 hover:text-neutral-900"
     }`;
 
@@ -40,7 +40,7 @@ export default function Page() {
         <video
           className="absolute inset-0 h-full w-full object-cover"
           src={heroContents.video.src}
-          poster={heroContents.video.poster}
+          poster={"None"}
           autoPlay
           muted
           loop
@@ -48,6 +48,9 @@ export default function Page() {
           preload="metadata"
         />
         <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+        <div className="absolute inset-x-0 top-0 z-20 px-6">
+          <Header />
+        </div>
         <div className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 px-6 text-center sm:items-start sm:px-10 sm:text-left md:px-16">
           <h1 className="flex flex-col text-[clamp(2.2rem,6vw,4.5rem)] font-bold leading-tight">
             <span className="block">Melty Puffで</span>
@@ -59,12 +62,12 @@ export default function Page() {
             ベイプを、今すぐ見つけてください。
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <button
+            <Link
               className="rounded-3xl border border-white/40 px-8 py-3 text-lg font-semibold text-white/90 transition-colors duration-200 hover:border-white hover:text-white sm:text-xl"
-              onClick={() => router.push("/shop/home")}
+              href="/shop/shop-non"
             >
               ショップを見る
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -104,12 +107,12 @@ export default function Page() {
                   <p className="text-base text-gray-600">
                     ニコチンを含んでいないので初心者におすすめ
                   </p>
-                  <button
+                  <Link
                     className="mt-4 self-center rounded-xl shadow-xl px-6 py-3 text-black transition-colors duration-200 hover:bg-[#b43353] hover:text-white md:self-start"
-                    onClick={() => router.push("/shop-non")}
+                    href="shop-non"
                   >
                     商品を見てみる
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -134,12 +137,12 @@ export default function Page() {
                   <p className="text-base text-gray-600">
                     ニコチンを含んだ世界中で人気のドバイ発のベイプブランドです
                   </p>
-                  <button
+                  <Link
                     className="mt-4 self-center rounded-xl shadow-xl px-6 py-3 text-black transition-colors duration-200 hover:bg-[#b43353] hover:text-white md:self-start"
-                    onClick={() => router.push("/shop-nic")}
+                    href="/shop/shop-nic"
                   >
                     商品を見てみる
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
