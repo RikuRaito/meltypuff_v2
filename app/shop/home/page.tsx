@@ -59,7 +59,7 @@ export default function Page() {
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
             こだわり抜いたフレーバーと確かな品質。あなたのライフスタイルに合う
-            ベイプを、今すぐ見つけてください。
+            ベイプがここで見つかる。
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Link
@@ -138,7 +138,7 @@ export default function Page() {
                     ニコチンを含んだ世界中で人気のドバイ発のベイプブランドです
                   </p>
                   <Link
-                    className="mt-4 self-center rounded-xl shadow-xl px-6 py-3 text-black transition-colors duration-200 hover:bg-[#b43353] hover:text-white md:self-start"
+                    className="mt-4 border-black self-center rounded-xl shadow-xl px-6 py-3 text-black transition-colors duration-200 hover:bg-[#b43353] hover:text-white md:self-start"
                     href="/shop/shop-nic"
                   >
                     商品を見てみる
