@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Header from "@/app/components/layouts/header/Header";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -48,9 +47,6 @@ export default function Page() {
           preload="metadata"
         />
         <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
-        <div className="absolute inset-x-0 top-0 z-20 px-6">
-          <Header />
-        </div>
         <div className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 px-6 text-center sm:items-start sm:px-10 sm:text-left md:px-16">
           <h1 className="flex flex-col text-[clamp(2.2rem,6vw,4.5rem)] font-bold leading-tight">
             <span className="block">Melty Puffで</span>
