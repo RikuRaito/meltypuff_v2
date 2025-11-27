@@ -14,11 +14,7 @@ const SHOP_MENU = [
   { href: "/shop/shop-nic", label: "ニコチン" },
 ];
 
-export default function Header({
-  positionClass = "fixed",
-}: {
-  positionClass?: string;
-}) {
+export default function Header_home() {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const shopRef = useRef<HTMLDivElement>(null);
   const [cartCount, setCartCount] = useState(0);
@@ -71,18 +67,18 @@ export default function Header({
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-3 z-20`}>
-      <div className="mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border border-black px-6 py-3 text-sm shadow-lx backdrop-blur">
+    <header className="fixed inset-x-0 top-3 z-50">
+      <div className="mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border border-white/20 px-6 py-3 text-sm shadow-lx backdrop-blur">
         <Link href="/" className="flex items-center gap-3 font-semibold">
           <img src="/logo/logo.png" className="w-10"></img>
-          <span className="text-xl tracking-wide text-black">Melty Puff</span>
+          <span className="text-xl tracking-wide text-white">Melty Puff</span>
         </Link>
 
-        <nav className="flex flex-1 justify-center text-black">
+        <nav className="flex flex-1 justify-center text-white">
           <ul className="flex items-center gap-6 text-xl font-medium">
             <li ref={shopRef} className="relative">
               <button
-                className="flex items-center gap-1 rounded-full border px-4 py-2 transition-colors duration-200 hover:border-black/30"
+                className="flex items-center gap-1 rounded-full border border-transparent px-4 py-2 transition-colors duration-200 hover:border-white/30"
                 onClick={() => setIsShopOpen((prev) => !prev)}
               >
                 Shop
@@ -107,7 +103,7 @@ export default function Header({
                 </svg>
               </button>
               {isShopOpen && (
-                <div className="absolute left-1/2 top-12 z-50 w-48 -translate-x-1/2 rounded-2xl border border-black/30 bg-white/90 p-3 text-base text-neutral-900 shadow-xl backdrop-blur">
+                <div className="absolute left-1/2 top-12 z-50 w-48 -translate-x-1/2 rounded-2xl border border-white/30 bg-white/90 p-3 text-base text-neutral-900 shadow-xl backdrop-blur">
                   {SHOP_MENU.map((item) => (
                     <Link
                       key={item.href}
@@ -136,7 +132,7 @@ export default function Header({
 
         <Link
           href="/shop/cart"
-          className="relative flex items-center gap-2 rounded-full border border-black/30 px-4 py-2 font-semibold text-[#b43353] transition"
+          className="relative flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 font-semibold text-[#b43353] transition"
         >
           <svg
             width="18"
