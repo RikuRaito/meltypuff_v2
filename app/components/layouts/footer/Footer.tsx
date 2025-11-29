@@ -8,7 +8,7 @@ const FOOTER_MENU = [
 
 export default function Footer() {
   return (
-    <footer className="bg-black/90 relative flex flex-col items-center gap-2 px-6 py-4 text-sm text-white">
+    <footer className="mt-6 bg-black/90 relative flex flex-col items-center gap-2 px-6 py-4 text-sm text-white">
       <span className="text-center">
         &copy; 2025 Melty Puff. All rights reserved.
       </span>
