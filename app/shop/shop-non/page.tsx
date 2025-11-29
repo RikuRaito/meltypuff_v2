@@ -68,7 +68,7 @@ export default function ShopNon() {
 
   const handleAddToCart = (productId: number) => {
     const itemQty: number = qty[productId];
-    const payload = { id: productId, qty: itemQty };
+    const payload = { id: productId, qty: itemQty, type: "nic" };
 
     localStorage.setItem("meltypuff_cart", JSON.stringify(payload));
     console.log(`ID: ${productId}was added to cart. Quantity is ${itemQty}`);
@@ -76,7 +76,9 @@ export default function ShopNon() {
   return (
     <main className="pt-30 pl-45">
       <section className="">
-        <h1 className="text-left text-3xl font-bold text-black">商品一覧</h1>
+        <h1 className="text-left text-3xl font-bold text-black">
+          ノンニコチンベイプ一覧
+        </h1>
         {products.map((product) => (
           <div key={product.id}>
             <p>{product.productName}</p>
