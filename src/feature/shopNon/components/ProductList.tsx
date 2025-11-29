@@ -34,7 +34,7 @@ export default function ProductList({ products }: ProductListProps) {
 
   const handleAddToCart = (productId: number) => {
     const itemQty: number = qty[productId];
-    const newItem = { id: productId, qty: itemQty, type: "nic" };
+    const newItem = { id: productId, qty: itemQty, type: "non" };
 
     // localStorageから既存のカート情報を取得
     const existingCart = localStorage.getItem("meltypuff_cart");
@@ -53,7 +53,7 @@ export default function ProductList({ products }: ProductListProps) {
 
     // 同じIDの商品が既に存在するかチェック
     const existingItemIndex: number = cartArray.findIndex(
-      (item) => item.id === productId && item.type === "nic"
+      (item) => item.id === productId && item.type === "non"
     );
 
     if (existingItemIndex !== -1) {
@@ -72,11 +72,8 @@ export default function ProductList({ products }: ProductListProps) {
   return (
     <section className="">
       <h1 className="text-left text-3xl font-bold text-black mb-3">
-        ニコチンベイプ一覧
+        ノンニコチンベイプ一覧
       </h1>
-      <h3 className="text-left text-0.5xl font-bold text-black mb-6">
-        ニコチンベイプは送料無料です。
-      </h3>
       <div className="flex flex-wrap gap-6">
         {products.map((product) => (
           <div

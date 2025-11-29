@@ -33,7 +33,7 @@ export default function Header_home() {
   useEffect(() => {
     const loadCartCount = () => {
       try {
-        const cartRaw = window.localStorage.getItem("cart");
+        const cartRaw = window.localStorage.getItem("meltypuff_cart");
         if (!cartRaw) {
           setCartCount(0);
           return;
@@ -56,8 +56,9 @@ export default function Header_home() {
 
     loadCartCount();
 
+    //他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === "cart") {
+      if (event.key === "meltypuff_cart") {
         loadCartCount();
       }
     };

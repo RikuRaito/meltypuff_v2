@@ -37,7 +37,7 @@ export default function Header({
   useEffect(() => {
     const loadCartCount = () => {
       try {
-        const cartRaw = window.localStorage.getItem("cart");
+        const cartRaw = window.localStorage.getItem("meltypuff_cart");
         if (!cartRaw) {
           setCartCount(0);
           return;
