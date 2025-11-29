@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product } from "../server/ShopNicServer";
+import { Product } from "../server/ShopNonServer";
 
 type ProductListProps = {
   products: Product[];

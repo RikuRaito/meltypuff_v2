@@ -1,4 +1,5 @@
-import { getNicProductsInStock } from "@/lib/api/products";
+import { getNonProductsInStock } from "@/lib/api/products";
+import { getDisplayName } from "next/dist/shared/lib/utils";
 
 export type Product = {
   id: number;
@@ -9,10 +10,8 @@ export type Product = {
 };
 
 export default async function ShopNicServer() {
-  // Server Componentから直接Prisma関数を呼び出し
-  const prismaData = await getNicProductsInStock();
+  const prismaData = await getNonProductsInStock();
 
-  // PrismaのdisplayNameをproductNameにマッピング
   const products: Product[] = prismaData.map((product) => ({
     id: product.id,
     recommend: product.recommend,
