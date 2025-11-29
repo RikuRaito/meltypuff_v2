@@ -25,17 +25,21 @@ model User {
 model Product_Non {
   id Int @id @default(autoincrement())
   name String
-  display_name String
-  image_path String
+  recommend Int @default(0)
+  displayName String @map("display_name")
+  imagePath String @map("image_path")
   price Int
+  stock Int
 }
 
 model Product_Nic {
   id Int @id @default(autoincrement()) 
   name String 
+  recommend Int @default(0)
   displayName String @map("display_name")
   imagePath String @map("image_path")
   price Int
+  stock Int
 }
 
 model Coupon {
