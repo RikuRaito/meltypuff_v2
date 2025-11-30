@@ -1,5 +1,6 @@
+"use server";
+
 import { prisma } from "../prisma";
-("use server");
 
 /**ノンニコチン商品に関する関数 */
 //在庫に関わらず全ての商品情報（ノンニコチン）を抽出
