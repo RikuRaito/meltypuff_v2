@@ -53,3 +53,10 @@ model Admin {
   inAppId String @map("in_app_id")
   passwd String
 }
+
+model Contact {
+  id Int @id @default(autoincrement())
+  name String @default("")
+  email String
+  content String
+}
