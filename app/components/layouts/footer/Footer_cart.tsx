@@ -10,5 +10,9 @@ type Item = {
 };
 
 export default function Footer_cart() {
-  return <footer>{/* フッターの内容 */}</footer>;
+  return (
+    <footer>
+      <div className=""></div>
+    </footer>
+  );
 }
