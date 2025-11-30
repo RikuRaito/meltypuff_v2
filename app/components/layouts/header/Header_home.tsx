@@ -41,7 +41,14 @@ export default function Header_home() {
 
         const parsed = JSON.parse(cartRaw);
         if (Array.isArray(parsed)) {
-          setCartCount(parsed.length);
+          const itemsqty = Array.isArray(parsed)
+            ? parsed.reduce(
+                (sum, item) =>
+                  sum + (typeof item.qty === "number" ? item.qty : 0),
+                0
+              )
+            : 0;
+          setCartCount(itemsqty);
         } else if (Array.isArray(parsed?.items)) {
           setCartCount(parsed.items.length);
         } else if (typeof parsed?.length === "number") {
@@ -56,15 +63,24 @@ export default function Header_home() {
 
     loadCartCount();
 
-    //他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
+    // カスタムイベントでカート更新を検知（同じタブ内の変更に対応）
+    const handleCartUpdate = () => {
+      loadCartCount();
+    };
+
+    // 他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
     const handleStorage = (event: StorageEvent) => {
       if (event.key === "meltypuff_cart") {
         loadCartCount();
       }
     };
 
+    window.addEventListener("cartUpdated", handleCartUpdate);
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdate);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   return (

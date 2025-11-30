@@ -34,11 +34,26 @@ export default function ProductList({ products }: ProductListProps) {
 
   const handleAddToCart = (productId: number) => {
     const itemQty: number = qty[productId];
-    const newItem = { id: productId, qty: itemQty, type: "nic" };
+    const product = products.find((item) => item.id === productId);
+    if (!product) return;
+
+    const newItem = {
+      id: productId,
+      qty: itemQty,
+      type: "nic",
+      price: product.price,
+      imagePath: product.imagePath,
+    };
 
     // localStorageから既存のカート情報を取得
     const existingCart = localStorage.getItem("meltypuff_cart");
-    let cartArray: Array<{ id: number; qty: number; type: string }> = [];
+    let cartArray: Array<{
+      id: number;
+      qty: number;
+      type: string;
+      price: number;
+      imagePath: string;
+    }> = [];
 
     if (existingCart) {
       try {
@@ -52,13 +67,13 @@ export default function ProductList({ products }: ProductListProps) {
     }
 
     // 同じIDの商品が既に存在するかチェック
-    const existingItemIndex: number = cartArray.findIndex(
+    const existingItem = cartArray.find(
       (item) => item.id === productId && item.type === "nic"
     );
 
-    if (existingItemIndex !== -1) {
+    if (existingItem) {
       // 既に存在する場合は数量を足す
-      cartArray[existingItemIndex].qty += itemQty;
+      existingItem.qty += itemQty;
     } else {
       // 存在しない場合は新しい商品を配列に追加
       cartArray.push(newItem);
@@ -66,6 +81,10 @@ export default function ProductList({ products }: ProductListProps) {
 
     // localStorageに保存
     localStorage.setItem("meltypuff_cart", JSON.stringify(cartArray));
+
+    // カスタムイベントを発火してヘッダーのカート数を更新
+    window.dispatchEvent(new Event("cartUpdated"));
+
     console.log(`ID: ${productId} was added to cart. Quantity is ${itemQty}`);
   };
 
