@@ -1,8 +1,9 @@
 import { prisma } from "../prisma";
+("use server");
 
 /**ノンニコチン商品に関する関数 */
 //在庫に関わらず全ての商品情報（ノンニコチン）を抽出
-export async function getNonProducts() {
+export const getNonProducts = async () => {
   try {
     const products = await prisma.product_Non.findMany({
       orderBy: {
@@ -14,10 +15,10 @@ export async function getNonProducts() {
     console.error("商品データの取得に失敗しました: ", error);
     throw error;
   }
-}
+};
 
 //在庫がある商品（ノンニコチン）の商品を抽出
-export async function getNonProductsInStock() {
+export const getNonProductsInStock = async () => {
   try {
     const prismaData = await prisma.product_Non.findMany({
       where: {
@@ -34,11 +35,11 @@ export async function getNonProductsInStock() {
     console.error("商品データの取得に失敗しました：", error);
     throw error;
   }
-}
+};
 
 /**ニコチン商品に関する関数 */
 //在庫に関わらず全ての商品情報（ニコチン）を抽出
-export async function getNicProducts() {
+export const getNicProducts = async () => {
   try {
     const products = await prisma.product_Nic.findMany({
       orderBy: {
@@ -50,10 +51,10 @@ export async function getNicProducts() {
     console.error("商品データの取得に失敗しました:", error);
     throw error;
   }
-}
+};
 
 //IDで特定の商品（ニコチン）を抽出
-export async function getNicProductById(id: number) {
+export const getNicProductById = async (id: number) => {
   try {
     const product = await prisma.product_Nic.findUnique({
       where: {
@@ -65,7 +66,7 @@ export async function getNicProductById(id: number) {
     console.error("商品データの取得に失敗しました:", error);
     throw error;
   }
-}
+};
 
 //在庫がある商品（ニコチン）だけを抽出
 export async function getNicProductsInStock() {
