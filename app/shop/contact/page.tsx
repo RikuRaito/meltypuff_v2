@@ -176,30 +176,30 @@ export default function Contact() {
                 }
               }}
             >
-              <label className="flex flex-col gap-2">
+              <label className="flex flex-col gap-2 text-black">
                 お名前
                 <input
                   type="text"
                   name="name"
-                  className="rounded border px-3 py-2"
+                  className="rounded border px-3 py-2 text-black"
                   required
                 />
               </label>
-              <label className="flex flex-col gap-2">
+              <label className="flex flex-col gap-2 text-black">
                 メールアドレス
                 <input
                   type="email"
                   name="email"
-                  className="rounded border px-3 py-2"
+                  className="rounded border px-3 py-2 text-black"
                   required
                 />
               </label>
-              <label className="flex flex-col gap-2">
+              <label className="flex flex-col gap-2 text-black">
                 お問い合わせ内容
                 <textarea
                   name="message"
                   rows={5}
-                  className="rounded border px-3 py-2"
+                  className="rounded border px-3 py-2 text-black"
                   required
                 />
               </label>
@@ -210,7 +210,7 @@ export default function Contact() {
                 送信
               </button>
             </form>
-            <p className="mt-4 text-xs text-gray-400">
+            <p className="mt-4 text-xs text-black">
               ※送信後、内容を確認し担当者よりご連絡いたします。
             </p>
           </div>

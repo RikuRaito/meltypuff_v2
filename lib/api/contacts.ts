@@ -2,6 +2,7 @@
 import { prisma } from "../prisma";
 
 type ContactInput = {
+  name: string;
   email: string;
   content: string;
 };
@@ -9,6 +10,7 @@ type ContactInput = {
 // データベースから取得したお問い合わせの型
 type Contact = {
   id: number;
+  name: string;
   email: string;
   content: string;
 };
@@ -25,6 +27,7 @@ export const submitContact = async (
   formData: FormData
 ): Promise<SubmitResult> => {
   try {
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const content = formData.get("message") as string;
 
@@ -37,6 +40,7 @@ export const submitContact = async (
 
     await prisma.contact.create({
       data: {
+        name: name,
         email: email,
         content: content,
       },
@@ -60,6 +64,7 @@ export const saveContact = async (contact: ContactInput): Promise<Contact> => {
   try {
     const savedContact = await prisma.contact.create({
       data: {
+        name: contact.name,
         email: contact.email,
         content: contact.content,
       },
