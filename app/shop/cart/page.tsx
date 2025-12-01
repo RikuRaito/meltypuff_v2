@@ -117,6 +117,38 @@ export default function Cart() {
     }
   };
 
+  const handleApplyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // デフォルトのフォーム送信を防ぐ
+
+    const formData = new FormData(e.currentTarget);
+    const couponCode = formData.get("coupon") as string;
+
+    if (!couponCode) {
+      alert("クーポンコードを入力してください");
+      return;
+    }
+
+    try {
+      const { applyCoupon } = await import("@/lib/api/purchase");
+      const result = await applyCoupon(couponCode);
+
+      if (result.success && result.coupon) {
+        // クーポン適用後の価格を計算
+        const discountRate = result.coupon.finalPriceRate;
+        const discountedPrice = Math.floor(totalPrice * discountRate);
+        setTotalPrice(discountedPrice);
+        alert("クーポンが適用されました");
+        // フォームをリセット
+        e.currentTarget.reset();
+      } else {
+        alert(result.error || "クーポンの適用に失敗しました");
+      }
+    } catch (error) {
+      console.error("クーポン適用中にエラーが発生しました:", error);
+      alert("クーポン適用中にエラーが発生しました");
+    }
+  };
+
   const handleCheckout = async () => {
     // 後で決済処理のServer Actionを呼び出す予定
     // 例: const result = await processPayment(carts);
@@ -138,7 +170,7 @@ export default function Cart() {
               >
                 <img
                   src={`${item.imagePath}`}
-                  className="w-24 h-24 object-cover border rounded"
+                  className="w-18 h-18 md:w-24 md:h-24 object-cover border rounded"
                 />
                 <div className="flex-1">
                   <p className="text-black font-semibold">{item.displayName}</p>
@@ -174,6 +206,25 @@ export default function Cart() {
                 </div>
               </div>
             ))}
+          <div>
+            <h2 className="text-black text-xl md:text-2xl font-bold mt-6 mb-4">
+              クーポンコード
+            </h2>
+            <form className="flex gap-2" onSubmit={handleApplyCoupon}>
+              <input
+                type="text"
+                name="coupon"
+                placeholder="クーポンコードを入力"
+                className="flex-1 border border-gray-300 rounded px-4 py-2 text-black"
+              />
+              <button
+                type="submit"
+                className="bg-[#b43353] text-white rounded px-6 py-2 font-bold hover:bg-[#9a2a45] transition-colors"
+              >
+                適用
+              </button>
+            </form>
+          </div>
         </div>
         {carts.length === 0 && (
           <div className="text-gray-500 text-center py-10">

@@ -60,3 +60,37 @@ model Contact {
   email String
   content String
 }
+
+model Payment {
+  id Int @id @default(autoincrement())
+  name String
+  email String
+  phone String
+  zipCode String @map("zip_code")
+  address1 String
+  address2 String
+  price Int
+  coupon String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // リレーション: 1つのPaymentに複数のPaymentItemが紐付く
+  items PaymentItem[]
+}
+
+model PaymentItem {
+  id Int @id @default(autoincrement())
+  paymentId Int @map("payment_id")
+  
+  // 商品情報（購入時点の情報を保存）
+  productId Int @map("product_id")
+  productType String @map("product_type") // "nic" または "non"
+  productName String @map("product_name")
+  displayName String @map("display_name")
+  imagePath String @map("image_path")
+  price Int // 購入時点の単価
+  quantity Int
+  
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  
+  @@map("payment_item")
+}
