@@ -51,6 +51,7 @@ model Coupon {
 model Admin {
   id Int @id @default(autoincrement())
   inAppId String @map("in_app_id")
+  email String @unique
   passwd String
 }
 
