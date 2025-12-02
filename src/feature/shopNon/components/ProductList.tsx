@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product } from "../server/ShopNonServer";
+import { Product, CartItem } from "@/src/types/product";
 
 type ProductListProps = {
   products: Product[];
@@ -37,23 +37,18 @@ export default function ProductList({ products }: ProductListProps) {
     const product = products.find((item) => item.id === productId);
     if (!product) return;
 
-    const newItem = {
+    const newItem: CartItem = {
       id: productId,
       qty: itemQty,
       type: "non",
       price: product.price,
       imagePath: product.imagePath,
+      displayName: product.displayName,
     };
 
     // localStorageから既存のカート情報を取得
     const existingCart = localStorage.getItem("meltypuff_cart");
-    let cartArray: Array<{
-      id: number;
-      qty: number;
-      type: string;
-      price: number;
-      imagePath: string;
-    }> = [];
+    let cartArray: CartItem[] = [];
 
     if (existingCart) {
       try {
