@@ -11,7 +11,7 @@ export type CouponResult = {
   error?: string;
 };
 
-const handlePurchase = async (price: number, products: Product[]) => {
+export const handlePurchase = async (price: number, products: Product[]) => {
   try {
   } catch (error) {}
 };

@@ -1,36 +1,32 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/types/product";
+import { applyCoupon } from "@/lib/api/purchase";
 
 export default function Cart() {
   const [carts, setCarts] = useState<CartItem[]>([]);
+  const [discountRate, setDiscountRate] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [isApplyedCoupon, setIsApplyedCoupon] = useState(false);
 
   const loadCartData = () => {
     try {
       const cartRaw = window.localStorage.getItem("meltypuff_cart");
       if (!cartRaw) {
         setCarts([]);
-        setTotalPrice(0);
         return;
       }
 
       const parsed = JSON.parse(cartRaw);
       const itemsInCart: CartItem[] = Array.isArray(parsed) ? parsed : [];
       setCarts(itemsInCart);
-
-      // カート内の合計金額を計算（単価 × 数量の合計）
-      const total = itemsInCart.reduce((sum, item) => {
-        return sum + (item.price || 0) * (item.qty || 0);
-      }, 0);
-      setTotalPrice(total);
     } catch (error) {
       console.error("カートデータの読み込みに失敗しました:", error);
       setCarts([]);
-      setTotalPrice(0);
     }
   };
 
+  // カートデータの読み込み
   useEffect(() => {
     loadCartData();
 
@@ -53,6 +49,14 @@ export default function Cart() {
       window.removeEventListener("storage", handleStorage);
     };
   }, []);
+
+  // カート内容が変更された時に合計金額を再計算
+  useEffect(() => {
+    const total = carts.reduce((sum, item) => {
+      return sum + (item.price || 0) * (item.qty || 0);
+    }, 0);
+    setTotalPrice(total);
+  }, [carts]);
 
   const handleChangeQty = (
     itemId: number,
@@ -118,7 +122,13 @@ export default function Cart() {
   };
 
   const handleApplyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // デフォルトのフォーム送信を防ぐ
+    e.preventDefault();
+
+    // 既にクーポンが適用されている場合は処理を中断
+    if (isApplyedCoupon) {
+      alert("クーポンは既に適用されています");
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const couponCode = formData.get("coupon") as string;
@@ -129,17 +139,14 @@ export default function Cart() {
     }
 
     try {
-      const { applyCoupon } = await import("@/lib/api/purchase");
       const result = await applyCoupon(couponCode);
 
       if (result.success && result.coupon) {
         // クーポン適用後の価格を計算
-        const discountRate = result.coupon.finalPriceRate;
-        const discountedPrice = Math.floor(totalPrice * discountRate);
-        setTotalPrice(discountedPrice);
+        const newDiscountRate = result.coupon.finalPriceRate;
+        setDiscountRate(newDiscountRate);
         alert("クーポンが適用されました");
-        // フォームをリセット
-        e.currentTarget.reset();
+        setIsApplyedCoupon(true);
       } else {
         alert(result.error || "クーポンの適用に失敗しました");
       }
@@ -215,15 +222,23 @@ export default function Cart() {
                 type="text"
                 name="coupon"
                 placeholder="クーポンコードを入力"
-                className="flex-1 border border-gray-300 rounded px-4 py-2 text-black"
+                disabled={isApplyedCoupon}
+                className="flex-1 border border-gray-300 rounded px-4 py-2 text-black disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
               <button
                 type="submit"
-                className="bg-[#b43353] text-white rounded px-6 py-2 font-bold hover:bg-[#9a2a45] transition-colors"
+                disabled={isApplyedCoupon}
+                className="bg-[#b43353] text-white rounded px-6 py-2 font-bold hover:bg-[#9a2a45] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 適用
               </button>
             </form>
+            {isApplyedCoupon && (
+              <p className="text-green-600 font-semibold mt-2">
+                クーポンが適用されました（割引率:{" "}
+                {Math.round((1 - discountRate) * 100)}%）
+              </p>
+            )}
           </div>
         </div>
         {carts.length === 0 && (
@@ -241,7 +256,7 @@ export default function Cart() {
               <div className="flex flex-col">
                 <span className="text-sm text-gray-600">合計</span>
                 <span className="text-2xl font-bold text-black">
-                  ¥{totalPrice.toLocaleString()}
+                  ¥{Math.floor(totalPrice * discountRate).toLocaleString()}
                 </span>
               </div>
               <button
