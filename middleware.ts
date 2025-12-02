@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   // /admin/* で認証チェック（/admin/login は除外）
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     // Edge Runtimeではauth()が使えないため、cookieの存在のみをチェック
-    // 詳細な認証チェック（roleの確認など）は各ページのrequireAuth()で行う
+    // 詳細な認証チェックは各ページのrequireAuth()で行う
     const cookies = request.cookies.getAll();
     const hasSessionCookie = cookies.some(
       (cookie) =>

@@ -1,8 +1,13 @@
-import { requireAuth } from "@/lib/auth";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 
 export default async function AdminPage() {
-  const session = await requireAuth();
+  const session = await auth();
+
+  if (!session) {
+    redirect("/admin/login");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

@@ -17,33 +17,60 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          // データベースから管理者を検索（メールアドレスで検索）
+          // まず管理者を検索
           const admin = await prisma.admin.findUnique({
             where: {
               email: credentials.email as string,
             },
           });
 
-          if (!admin) {
+          if (admin) {
+            // 管理者のパスワードを検証
+            const isPasswordValid = await compare(
+              credentials.password as string,
+              admin.passwd
+            );
+
+            if (!isPasswordValid) {
+              return null;
+            }
+
+            // 管理者として認証成功
+            return {
+              id: admin.id.toString(),
+              email: admin.email,
+              name: admin.inAppId,
+              type: "admin",
+            };
+          }
+
+          // 管理者が見つからない場合、通常ユーザーを検索
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
+
+          if (!user) {
             return null;
           }
 
-          // パスワードの検証（bcryptjsを使用）
+          // ユーザーのパスワードを検証
           const isPasswordValid = await compare(
             credentials.password as string,
-            admin.passwd
+            user.passwd
           );
 
           if (!isPasswordValid) {
             return null;
           }
 
-          // 認証成功
+          // ユーザーとして認証成功
           return {
-            id: admin.id.toString(),
-            email: admin.email,
-            name: admin.inAppId,
-            role: "admin",
+            id: user.id.toString(),
+            email: user.email,
+            name: user.email, // ユーザー名としてemailを使用（必要に応じて変更可能）
+            type: "user",
           };
         } catch (error) {
           console.error("認証エラー:", error);
@@ -60,7 +87,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.role = user.role;
+        // typeプロパティを追加（"admin" または "user"）
+        const userWithType = user as { type?: string };
+        if (userWithType.type) {
+          token.type = userWithType.type;
+        }
       }
       return token;
     },
@@ -68,7 +99,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
-        session.user.role = token.role as string;
+        // typeプロパティを追加（"admin" または "user"）
+        (session.user as { type?: string }).type = token.type as string;
       }
       return session;
     },

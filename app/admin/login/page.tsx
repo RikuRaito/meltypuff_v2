@@ -8,10 +8,7 @@ export default async function AuthLogin() {
 
   // 既にログインしている場合、ダッシュボードにリダイレクト
   if (session) {
-    const userRole = (session.user as { role?: string })?.role;
-    if (userRole === "admin") {
-      redirect("/admin/dashboard");
-    }
+    redirect("/admin/dashboard");
   }
 
   return (
