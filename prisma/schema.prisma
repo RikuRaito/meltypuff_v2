@@ -73,6 +73,7 @@ model Payment {
   price Int
   coupon String?
   createdAt DateTime @default(now()) @map("created_at")
+  status String
   
   // リレーション: 1つのPaymentに複数のPaymentItemが紐付く
   items PaymentItem[]
