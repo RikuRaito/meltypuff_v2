@@ -6,7 +6,7 @@ export type Payment = {
   zipCode: string;
   address1: string;
   address2: string;
-  price: string;
+  price: number;
   coupon: string;
   status: string;
   createdAt: Date;
