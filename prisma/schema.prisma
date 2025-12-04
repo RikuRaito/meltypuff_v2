@@ -17,9 +17,9 @@ model User {
   email String @unique
   passwd String
   phoneNumber String @map("phone_number")
-  postCode String @map("post_code")
-  address1 String @map("address_1")
-  address2 String @map("address_2")
+  postCode String @map("post_code") @default("")
+  address1 String @map("address_1") @default("")
+  address2 String @map("address_2") @default("")
 }
 
 model Product_Non {
@@ -73,6 +73,7 @@ model Payment {
   price Int
   coupon String?
   createdAt DateTime @default(now()) @map("created_at")
+  status String
   
   // リレーション: 1つのPaymentに複数のPaymentItemが紐付く
   items PaymentItem[]
@@ -94,4 +95,12 @@ model PaymentItem {
   payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   
   @@map("payment_item")
+}
+
+model RegularCustomer {
+  id Int @id @default(autoincrement())
+  name String
+  phone String
+  postCode String @map("post_code")
+  address String 
 }

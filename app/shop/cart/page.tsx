@@ -7,14 +7,57 @@ export default function Cart() {
     discountRate,
     totalPrice,
     isApplyedCoupon,
+    isPaymentCompleted,
+    isProcessing,
     handleChangeQty,
     handleRemoveItem,
     handleApplyCoupon,
     handleCheckout,
+    handleClosePaymentComplete,
   } = useCart();
+
+  const appId = "Appid";
+  const locationId = "main";
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* 決済完了メッセージ */}
+      {isPaymentCompleted && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-8 max-w-md mx-4 shadow-xl">
+            <div className="text-center">
+              <div className="mb-4">
+                <svg
+                  className="mx-auto h-16 w-16 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                決済が完了しました
+              </h2>
+              <p className="text-gray-600 mb-6">
+                ご注文ありがとうございました。確認メールをお送りいたします。
+              </p>
+              <button
+                onClick={handleClosePaymentComplete}
+                className="bg-[#b43353] text-white rounded-full font-bold px-8 py-3 hover:bg-[#9a2a45] transition-colors"
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="pt-18 w-full px-4 md:px-40 pb-32 flex-1">
         <h1 className="text-black mt-15 mb-7 text-xl font-bold md:text-3xl text-left">
           カート
@@ -112,9 +155,10 @@ export default function Cart() {
               </div>
               <button
                 onClick={handleCheckout}
-                className="bg-[#b43353] text-white rounded-full font-bold text-lg px-8 py-3 hover:bg-[#9a2a45] transition-colors whitespace-nowrap"
+                disabled={isProcessing}
+                className="bg-[#b43353] text-white rounded-full font-bold text-lg px-8 py-3 hover:bg-[#9a2a45] transition-colors whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                支払う
+                {isProcessing ? "処理中..." : "支払う"}
               </button>
             </div>
           </div>

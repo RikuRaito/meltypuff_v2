@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import LogoutButton from "./LogoutButton";
 
 export default async function AdminPage() {
   const session = await auth();
@@ -16,7 +15,6 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold text-gray-900">
             管理者ダッシュボード
           </h1>
-          <LogoutButton />
         </div>
         <div className="mt-8">
           <p className="text-gray-600">ようこそ、{session.user?.email}さん</p>
