@@ -1,4 +1,5 @@
 "use server";
+import { Payment } from "@/src/types/payments";
 import { prisma } from "../prisma";
 
 export const GetPaymentsData = async () => {
@@ -17,3 +18,5 @@ export const GetPaymentsData = async () => {
     throw error;
   }
 };
+
+export const makePaymentsData = async (payments: Payment) => {};

@@ -8,7 +8,7 @@ const NAV_ITEMS = [
     label: "注文一覧",
   },
   {
-    href: "/admin/make_payments",
+    href: "/admin/make_payment",
     label: "注文作成",
   },
   {
