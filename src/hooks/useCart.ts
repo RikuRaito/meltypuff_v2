@@ -2,12 +2,23 @@
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/types/product";
 import { applyCoupon } from "@/lib/api/purchase";
+import { Payment } from "../types/payments";
 
 export const useCart = () => {
   const [carts, setCarts] = useState<CartItem[]>([]);
   const [discountRate, setDiscountRate] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [isApplyedCoupon, setIsApplyedCoupon] = useState(false);
+  const [isPaymentCompleted, setIsPaymentCompleted] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [finalPrice, setFinalPrice] = useState<number>(0);
+  const [couponCode, setCouponCode] = useState("");
 
   const loadCartData = () => {
     try {
@@ -147,6 +158,7 @@ export const useCart = () => {
         setDiscountRate(newDiscountRate);
         alert("クーポンが適用されました");
         setIsApplyedCoupon(true);
+        setCouponCode(couponCode);
       } else {
         alert(result.error || "クーポンの適用に失敗しました");
       }
@@ -157,9 +169,41 @@ export const useCart = () => {
   };
 
   const handleCheckout = async () => {
-    // 後で決済処理のServer Actionを呼び出す予定
-    // 例: const result = await processPayment(carts);
-    console.log("決済処理を開始します", carts);
+    if (carts.length === 0) {
+      alert("カートに商品がありません");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // TODO: Square決済処理をここに実装
+      // 例: const result = await processSquarePayment(carts, totalPrice * discountRate);
+
+      // 決済処理のシミュレーション（実際の決済処理に置き換える）
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2秒待機
+
+      // 決済成功時の処理
+      setIsPaymentCompleted(true);
+
+      // カートをクリア
+      localStorage.removeItem("meltypuff_cart");
+      setCarts([]);
+      setDiscountRate(1);
+      setIsApplyedCoupon(false);
+
+      // カスタムイベントを発火してヘッダーのカート数を更新
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error("決済処理中にエラーが発生しました:", error);
+      alert("決済処理に失敗しました。もう一度お試しください。");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleClosePaymentComplete = () => {
+    setIsPaymentCompleted(false);
   };
 
   return {
@@ -167,9 +211,12 @@ export const useCart = () => {
     discountRate,
     totalPrice,
     isApplyedCoupon,
+    isPaymentCompleted,
+    isProcessing,
     handleChangeQty,
     handleRemoveItem,
     handleApplyCoupon,
     handleCheckout,
+    handleClosePaymentComplete,
   };
 };

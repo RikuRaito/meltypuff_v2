@@ -6,11 +6,19 @@ type PaymentsListProps = {
 };
 
 export default function PaymentsList({ payments }: PaymentsListProps) {
+  if (payments.length === 0) {
+    return (
+      <div className="rounded-lg bg-white p-8 text-center shadow">
+        <p className="text-gray-500">支払い情報がありません</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* PaymentsListの実装を追加 */}
-      <p>注文一覧がここに表示されます</p>
-      <p>注文数: {payments.length}</p>
+      {payments.map((payment) => (
+        <div key={payment.id}></div>
+      ))}
     </div>
   );
 }
