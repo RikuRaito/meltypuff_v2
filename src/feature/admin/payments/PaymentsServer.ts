@@ -1,9 +1,9 @@
 import { Payment } from "@/src/types/payments";
-import { GetPaymentsData } from "@/lib/api/payments";
+import { getPaymentsData } from "@/lib/api/payments";
 
 export default async function PaymentsServer() {
   try {
-    const prismaData = await GetPaymentsData();
+    const prismaData = await getPaymentsData();
 
     // PrismaデータをPayment型にマッピング
     const payments: Payment[] = prismaData.map((payment) => ({

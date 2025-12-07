@@ -9,7 +9,7 @@ export default async function AuthLogin() {
   // 既にログインしている場合、ダッシュボードにリダイレクト
   if (session) {
     redirect("/admin/dashboard");
-  }
+      }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
