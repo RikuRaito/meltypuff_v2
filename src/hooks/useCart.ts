@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CartItem } from "@/src/types/product";
+import { CartItem } from "@/src/types/CartItem";
 import { applyCoupon } from "@/lib/api/purchase";
 import { Payment } from "../types/payments";
 

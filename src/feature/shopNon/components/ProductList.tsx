@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product, CartItem } from "@/src/types/product";
+import { Product_Non } from "@prisma/client";
+import { CartItem } from "@/src/types/CartItem";
 
 type ProductListProps = {
-  products: Product[];
+  products: Product_Non[];
 };
 
 export default function ProductList({ products }: ProductListProps) {
@@ -12,7 +13,7 @@ export default function ProductList({ products }: ProductListProps) {
 
   // 各商品のidと数量の辞書の初期化
   useEffect(() => {
-    const initQty = (data: Product[]) => {
+    const initQty = (data: Product_Non[]) => {
       const map: Record<number, number> = {};
       for (const product of data) {
         map[product.id] = 1;

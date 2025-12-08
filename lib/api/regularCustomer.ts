@@ -1,14 +1,14 @@
 "use server";
 import { prisma } from "../prisma";
 
-export const getRegularCostomer = async () => {
+export const getRegularCustomer = async () => {
   try {
-    const costomerList = await prisma.regularCustomer.findMany({
+    const customerList = await prisma.regularCustomer.findMany({
       orderBy: {
         id: "asc",
       },
     });
-    return costomerList;
+    return customerList;
   } catch (err) {
     console.log("エラーが発生しました", err);
     throw err;

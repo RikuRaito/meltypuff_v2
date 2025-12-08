@@ -1,5 +1,5 @@
 "use server";
-import { Product } from "@/src/types/product";
+import { Product_Nic, Product_Non } from "@prisma/client";
 import { prisma } from "../prisma";
 
 export type CouponResult = {
@@ -11,7 +11,10 @@ export type CouponResult = {
   error?: string;
 };
 
-export const handlePurchase = async (price: number, products: Product[]) => {
+export const handlePurchase = async (
+  price: number,
+  products: (Product_Nic | Product_Non)[]
+) => {
   try {
   } catch (error) {}
 };
