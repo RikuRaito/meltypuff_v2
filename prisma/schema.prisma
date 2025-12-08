@@ -102,5 +102,6 @@ model RegularCustomer {
   name String
   phone String
   postCode String @map("post_code")
-  address String 
+  address1 String @default("")
+  address2 String @default("")
 }

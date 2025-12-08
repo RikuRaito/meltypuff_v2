@@ -1,9 +1,8 @@
-import ShopNonServer from "@/src/feature/shopNon/server/ShopNonServer";
+import { getNonProductsInStock } from "@/lib/api/products";
 import ProductList from "@/src/feature/shopNon/components/ProductList";
 
-export default async function ShopNic() {
-  // Server Componentでデータを取得
-  const products = await ShopNonServer();
+export default async function ShopNon() {
+  const products = await getNonProductsInStock();
 
   return (
     <main className="pt-30 w-full px-4 md:px-30">

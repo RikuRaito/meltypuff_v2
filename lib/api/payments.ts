@@ -2,7 +2,7 @@
 import { Payment } from "@/src/types/payments";
 import { prisma } from "../prisma";
 
-export const GetPaymentsData = async () => {
+export const getPaymentsData = async () => {
   try {
     const payments = await prisma.payment.findMany({
       include: {
