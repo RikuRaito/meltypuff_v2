@@ -4,6 +4,11 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+enum CouponType {
+    AMOUNT_OFF
+    PERCENT_OFF
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -32,19 +37,10 @@ model Product_Non {
   stock Int
 }
 
-model Product_Nic {
-  id Int @id @default(autoincrement()) 
-  name String 
-  recommend Int @default(0)
-  displayName String @map("display_name")
-  imagePath String @map("image_path")
-  price Int
-  stock Int
-}
-
 model Coupon {
   id Int @id @default(autoincrement())
   code String @unique
+  type CouponType
   finalPriceRate Decimal @map("final_price_rate")
 }
 
