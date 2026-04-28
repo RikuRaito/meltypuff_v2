@@ -4,185 +4,184 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const NAV_ITEMS = [
-  { href: "/shop/article", label: "Article" },
-  { href: "/shop/contact", label: "Contact" },
-  { href: "/shop/login", label: "Login" },
+    { href: "/shop/article", label: "Article" },
+    { href: "/shop/contact", label: "Contact" },
+    { href: "/shop/login", label: "Login" },
 ];
 
 const SHOP_MENU = [
-  { href: "/shop/shop-non", label: "ノンニコチン" },
-  { href: "/shop/shop-nic", label: "ニコチン" },
+    { href: "/shop/shop-non", label: "ノンニコチン" },
+    { href: "/shop/shop-nic", label: "ニコチン" },
 ];
 
 export default function Header({
-  positionClass = "fixed",
+    positionClass = "fixed",
 }: {
-  positionClass?: string;
+    positionClass?: string;
 }) {
-  const [isShopOpen, setIsShopOpen] = useState(false);
-  const shopRef = useRef<HTMLDivElement>(null);
-  const [cartCount, setCartCount] = useState(0);
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopRef = useRef<HTMLLIElement>(null);
+    const [cartCount, setCartCount] = useState(0);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (shopRef.current && !shopRef.current.contains(event.target as Node)) {
-        setIsShopOpen(false);
-      }
-    };
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (shopRef.current && !shopRef.current.contains(event.target as Node)) {
+                setIsShopOpen(false);
+            }
+        };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
-  useEffect(() => {
-    const loadCartCount = () => {
-      try {
-        const cartRaw = window.localStorage.getItem("meltypuff_cart");
-        if (!cartRaw) {
-          setCartCount(0);
-          return;
-        }
+    useEffect(() => {
+        const loadCartCount = () => {
+            try {
+                const cartRaw = window.localStorage.getItem("meltypuff_cart");
+                if (!cartRaw) {
+                    setCartCount(0);
+                    return;
+                }
 
-        const parsed = JSON.parse(cartRaw);
-        if (Array.isArray(parsed)) {
-          // 数量合計を正しく計算し、0個でも確実に表示する
-          const itemsqty = Array.isArray(parsed)
-            ? parsed.reduce(
-                (sum, item) =>
-                  sum + (typeof item.qty === "number" ? item.qty : 0),
-                0
-              )
-            : 0;
-          setCartCount(itemsqty);
-        } else if (Array.isArray(parsed?.items)) {
-          setCartCount(parsed.items.length);
-        } else if (typeof parsed?.length === "number") {
-          setCartCount(parsed.length);
-        } else {
-          setCartCount(0);
-        }
-      } catch {
-        setCartCount(0);
-      }
-    };
+                const parsed = JSON.parse(cartRaw);
+                if (Array.isArray(parsed)) {
+                    // 数量合計を正しく計算し、0個でも確実に表示する
+                    const itemsqty = Array.isArray(parsed)
+                        ? parsed.reduce(
+                            (sum, item) =>
+                                sum + (typeof item.qty === "number" ? item.qty : 0),
+                            0
+                        )
+                        : 0;
+                    setCartCount(itemsqty);
+                } else if (Array.isArray(parsed?.items)) {
+                    setCartCount(parsed.items.length);
+                } else if (typeof parsed?.length === "number") {
+                    setCartCount(parsed.length);
+                } else {
+                    setCartCount(0);
+                }
+            } catch {
+                setCartCount(0);
+            }
+        };
 
-    loadCartCount();
-
-    // カスタムイベントでカート更新を検知（同じタブ内の変更に対応）
-    const handleCartUpdate = () => {
-      loadCartCount();
-    };
-
-    // 他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === "meltypuff_cart") {
         loadCartCount();
-      }
-    };
 
-    window.addEventListener("cartUpdated", handleCartUpdate);
-    window.addEventListener("storage", handleStorage);
-    return () => {
-      window.removeEventListener("cartUpdated", handleCartUpdate);
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
+        // カスタムイベントでカート更新を検知（同じタブ内の変更に対応）
+        const handleCartUpdate = () => {
+            loadCartCount();
+        };
 
-  return (
-    <header className={`fixed inset-x-0 top-3 z-20`}>
-      <div className="mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border border-black px-6 py-3 text-sm shadow-lx backdrop-blur">
-        <Link href="/" className="flex items-center gap-3 font-semibold">
-          <img src="/logo/logo.png" className="w-10"></img>
-          <span className="text-xl tracking-wide text-black">Melty Puff</span>
-        </Link>
+        // 他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
+        const handleStorage = (event: StorageEvent) => {
+            if (event.key === "meltypuff_cart") {
+                loadCartCount();
+            }
+        };
 
-        <nav className="flex flex-1 justify-center text-black">
-          <ul className="flex items-center gap-6 text-xl font-medium">
-            <li ref={shopRef} className="relative">
-              <button
-                className="flex items-center gap-1 rounded-full border px-4 py-2 transition-colors duration-200 hover:border-black/30"
-                onClick={() => setIsShopOpen((prev) => !prev)}
-              >
-                Shop
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  className={`transition-transform duration-200 ${
-                    isShopOpen ? "rotate-180" : "rotate-0"
-                  }`}
-                >
-                  <path
-                    d="M6 9l6 6 6-6"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              {isShopOpen && (
-                <div className="absolute left-1/2 top-12 z-50 w-48 -translate-x-1/2 rounded-2xl border border-black/30 bg-white/90 p-3 text-base text-neutral-900 shadow-xl backdrop-blur">
-                  {SHOP_MENU.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block rounded-xl px-4 py-2 font-medium text-[#b43353] transition hover:bg-[#b43353] hover:text-white"
-                      onClick={() => setIsShopOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </li>
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="transition-colors duration-200 hover:text-[#ffd6de]"
-                >
-                  {item.label}
+        window.addEventListener("cartUpdated", handleCartUpdate);
+        window.addEventListener("storage", handleStorage);
+        return () => {
+            window.removeEventListener("cartUpdated", handleCartUpdate);
+            window.removeEventListener("storage", handleStorage);
+        };
+    }, []);
+
+    return (
+        <header className={`fixed inset-x-0 top-3 z-20`}>
+            <div className="mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border border-black px-6 py-3 text-sm shadow-lx backdrop-blur">
+                <Link href="/" className="flex items-center gap-3 font-semibold">
+                    <img src="/logo/logo.png" className="w-10"></img>
+                    <span className="text-xl tracking-wide text-black">Melty Puff</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
 
-        <Link
-          href="/shop/cart"
-          className="relative flex items-center gap-2 rounded-full border border-black/30 px-4 py-2 font-semibold text-[#b43353] transition"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            className="text-[#b43353]"
-          >
-            <path
-              d="M3 4h2l2 12h10l2-8H7"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <circle cx="10" cy="20" r="1.2" fill="currentColor" />
-            <circle cx="17" cy="20" r="1.2" fill="currentColor" />
-          </svg>
-          <span>Cart</span>
-          {cartCount > 0 && (
-            <span className="absolute -right-3 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#b43353] text-xs font-bold text-white">
-              {cartCount}
-            </span>
-          )}
-        </Link>
-      </div>
-    </header>
-  );
+                <nav className="flex flex-1 justify-center text-black">
+                    <ul className="flex items-center gap-6 text-xl font-medium">
+                        <li ref={shopRef} className="relative">
+                            <button
+                                className="flex items-center gap-1 rounded-full border px-4 py-2 transition-colors duration-200 hover:border-black/30"
+                                onClick={() => setIsShopOpen((prev) => !prev)}
+                            >
+                                Shop
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                    className={`transition-transform duration-200 ${isShopOpen ? "rotate-180" : "rotate-0"
+                                        }`}
+                                >
+                                    <path
+                                        d="M6 9l6 6 6-6"
+                                        stroke="currentColor"
+                                        strokeWidth="1.6"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </button>
+                            {isShopOpen && (
+                                <div className="absolute left-1/2 top-12 z-50 w-48 -translate-x-1/2 rounded-2xl border border-black/30 bg-white/90 p-3 text-base text-neutral-900 shadow-xl backdrop-blur">
+                                    {SHOP_MENU.map((item) => (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            className="block rounded-xl px-4 py-2 font-medium text-[#b43353] transition hover:bg-[#b43353] hover:text-white"
+                                            onClick={() => setIsShopOpen(false)}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </li>
+                        {NAV_ITEMS.map((item) => (
+                            <li key={item.href}>
+                                <Link
+                                    href={item.href}
+                                    className="transition-colors duration-200 hover:text-[#ffd6de]"
+                                >
+                                    {item.label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+
+                <Link
+                    href="/shop/cart"
+                    className="relative flex items-center gap-2 rounded-full border border-black/30 px-4 py-2 font-semibold text-[#b43353] transition"
+                >
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        className="text-[#b43353]"
+                    >
+                        <path
+                            d="M3 4h2l2 12h10l2-8H7"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <circle cx="10" cy="20" r="1.2" fill="currentColor" />
+                        <circle cx="17" cy="20" r="1.2" fill="currentColor" />
+                    </svg>
+                    <span>Cart</span>
+                    {cartCount > 0 && (
+                        <span className="absolute -right-3 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#b43353] text-xs font-bold text-white">
+                            {cartCount}
+                        </span>
+                    )}
+                </Link>
+            </div>
+        </header>
+    );
 }

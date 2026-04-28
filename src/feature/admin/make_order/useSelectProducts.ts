@@ -1,8 +1,18 @@
 "use client";
 import { useState } from "react";
-import { Product_Nic } from "@prisma/client";
+// TODO: issue #21 ニコチン商品削除時にProduct_Nicの参照も削除する
+// import { Product_Nic } from "@prisma/client";
 
-// 注文アイテムの型
+type Product_Nic = {
+  id: number;
+  name: string;
+  displayName: string;
+  imagePath: string;
+  price: number;
+  stock: number;
+  recommend: number;
+};
+
 export type OrderItem = {
   product: Product_Nic;
   quantity: number;

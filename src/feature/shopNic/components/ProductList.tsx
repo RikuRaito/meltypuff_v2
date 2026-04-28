@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product_Nic } from "@prisma/client";
+// TODO: issue #21 ニコチン商品削除時にこのファイルごと削除する
+// import { Product_Nic } from "@prisma/client";
+type Product_Nic = {
+  id: number;
+  name: string;
+  displayName: string;
+  imagePath: string;
+  price: number;
+  stock: number;
+  recommend: number;
+};
 import { CartItem } from "@/src/types/CartItem";
 
 type ProductListProps = {

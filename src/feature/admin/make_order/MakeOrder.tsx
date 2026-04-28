@@ -1,11 +1,14 @@
 "use client";
-import { RegularCustomer, Product_Nic } from "@prisma/client";
+// TODO: issue #21 ニコチン商品削除時にProduct_Nicの参照も削除する
+import { RegularCustomer } from "@prisma/client";
+import { type OrderItem } from "./useSelectProducts";
 import { useRegularList } from "./useRegularList";
 import { useSelectProducts } from "./useSelectProducts";
 
 type Props = {
   customers: RegularCustomer[];
-  products: Product_Nic[];
+  // TODO: issue #21 ニコチン商品削除時にproductsも削除する
+  products: OrderItem["product"][];
 };
 
 export const MakeOrder = ({ customers, products }: Props) => {

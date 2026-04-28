@@ -1,12 +1,14 @@
 import { Payment } from "@/src/types/payments";
 import { getPaymentsData } from "@/lib/api/payments";
+import { Prisma } from "@prisma/client";
+
+type PrismaPayment = Prisma.PaymentGetPayload<{ include: { items: true } }>;
 
 export default async function PaymentsServer() {
   try {
     const prismaData = await getPaymentsData();
 
-    // PrismaデータをPayment型にマッピング
-    const payments: Payment[] = prismaData.map((payment) => ({
+    const payments: Payment[] = prismaData.map((payment: PrismaPayment) => ({
       id: payment.id,
       name: payment.name,
       email: payment.email,
@@ -18,7 +20,7 @@ export default async function PaymentsServer() {
       coupon: payment.coupon || "",
       status: payment.status,
       createdAt: payment.createdAt,
-      item: payment.items.map((item) => ({
+      item: payment.items.map((item: Prisma.PaymentItemGetPayload<object>) => ({
         id: item.id.toString(),
         displayName: item.displayName,
         quantity: item.quantity,

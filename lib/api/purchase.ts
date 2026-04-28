@@ -1,5 +1,4 @@
 "use server";
-import { Product_Nic, Product_Non } from "@prisma/client";
 import { prisma } from "../prisma";
 
 export type CouponResult = {
@@ -11,13 +10,8 @@ export type CouponResult = {
   error?: string;
 };
 
-export const handlePurchase = async (
-  price: number,
-  products: (Product_Nic | Product_Non)[]
-) => {
-  try {
-  } catch (error) {}
-};
+// TODO: issue #18 Square決済実装時にhandlePurchaseを実装する
+// TODO: issue #21 ニコチン商品削除時にProduct_Nicの参照も削除する
 
 export const applyCoupon = async (coupon: string): Promise<CouponResult> => {
   try {
