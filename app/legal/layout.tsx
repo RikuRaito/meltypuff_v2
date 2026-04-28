@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import Footer from "@/app/components/layouts/footer/Footer";
-import Header from "@/app/components/layouts/header/Header";
+import Footer from "@/src/components/common/Footer";
+import Header from "@/src/components/common/Header";
 
 export default function LegalLayout({ children }: { children: ReactNode }) {
   return (
