@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import PaymentsServer from "@/src/feature/admin/payments/PaymentsServer";
-import PaymentsList from "@/src/feature/admin/payments/PaymentsList";
+import PaymentsServer from "@/lib/actions/payments";
+import PaymentsList from "@/src/components/admin/PaymentsList";
 import { Payment } from "@/src/types/payments";
 
 export default async function AdminPayments() {

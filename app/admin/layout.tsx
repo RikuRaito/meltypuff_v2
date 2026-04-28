@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import MenuBar from "@/src/feature/admin/components/MenuBar";
+import MenuBar from "@/src/components/admin/MenuBar";
 import LogoutButton from "./dashboard/LogoutButton";
 
 export default function AdminLayout({

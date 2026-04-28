@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import ShopFooter from "@/app/components/layouts/footer/ShopFooter";
-import ShopHeader from "@/app/components/layouts/header/ShopHeader";
+import ShopFooter from "@/src/components/common/ShopFooter";
+import ShopHeader from "@/src/components/common/ShopHeader";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
   return (

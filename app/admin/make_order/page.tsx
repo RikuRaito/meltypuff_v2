@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getRegularCustomer } from "@/lib/api/regularCustomer";
-import { MakeOrder } from "@/src/feature/admin/make_order/MakeOrder";
+import { MakeOrder } from "@/src/components/admin/MakeOrder";
 
 // TODO: issue #21 ニコチン商品削除時にこのページごと削除を検討する
 export default async function MakeOrderPage() {

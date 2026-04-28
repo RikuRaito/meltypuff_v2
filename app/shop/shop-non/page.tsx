@@ -1,5 +1,5 @@
 import { getNonProductsInStock } from "@/lib/api/products";
-import ProductList from "@/src/feature/shopNon/components/ProductList";
+import ProductList from "@/src/components/shop/ProductList";
 
 export default async function ShopNon() {
   const products = await getNonProductsInStock();

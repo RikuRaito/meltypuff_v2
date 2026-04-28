@@ -53,20 +53,34 @@ npm run dev
 ## ディレクトリ構成
 
 ```
-app/
-  shop/         # 一般ユーザー向けページ
-  admin/        # 管理者向けページ
-  legal/        # 特商法・利用規約・プライバシーポリシー
+app/                        # ルーティング・ページのContainer
+  shop/                     # 一般ユーザー向けページ
+  admin/                    # 管理者向けページ
+  legal/                    # 特商法・利用規約・プライバシーポリシー
 lib/
-  api/          # サーバーサイドのデータアクセス関数（"use server"）
-  prisma.ts     # Prisma Clientのシングルトン
+  api/                      # DBアクセス（"use server"、Prismaを直接操作）
+  actions/                  # サーバー側のビジネスロジック
+  prisma.ts                 # Prisma Clientのシングルトン
+  supabaseClient.ts         # Supabase Clientのシングルトン
 src/
-  feature/      # 機能単位のコンポーネント・ロジック
-  hooks/        # カスタムフック
-  types/        # 型定義
+  components/
+    common/                 # ヘッダー・フッターなど共通UIコンポーネント
+    admin/                  # 管理者画面のコンポーネント・hooks
+    shop/                   # ショップのコンポーネント
+  hooks/                    # カスタムフック
+  types/                    # 型定義
 prisma/
-  schema.prisma # DBスキーマ
+  schema.prisma             # DBスキーマ
 ```
+
+### 役割分担
+
+| ディレクトリ | 役割 |
+|-------------|------|
+| `app/` | ルーティング・レイアウトの組み立て（Container）。データ取得後に `src/components/` のコンポーネントに渡す |
+| `lib/api/` | DBへの直接アクセス（低レベル）。Prismaを使ったCRUD操作のみ |
+| `lib/actions/` | `lib/api/` を使って構築するサーバー側のビジネスロジック |
+| `src/components/` | UIコンポーネント・カスタムフック（クライアント側） |
 
 ## APIの仕様
 
@@ -78,9 +92,6 @@ Next.js の Server Actions を使用しており、URLを叩くREST APIではな
 |------|------|
 | `getNonProducts()` | ノンニコチン商品を全件取得 |
 | `getNonProductsInStock()` | 在庫あり（stock > 0）のノンニコチン商品を取得 |
-| `getNicProducts()` | ニコチン商品を全件取得 |
-| `getNicProductsInStock()` | 在庫あり（stock > 0）のニコチン商品を取得 |
-| `getNicProductById(id)` | IDでニコチン商品を1件取得 |
 
 ### 決済・クーポン (`lib/api/payments.ts`, `lib/api/purchase.ts`)
 
