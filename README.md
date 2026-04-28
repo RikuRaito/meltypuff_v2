@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# meltypuff_v2
 
-## Getting Started
+電子タバコ（vape）のECサイト。元々の React + Flask 構成から Next.js App Router によるフルスタック構成に移行して再開発したリポジトリ。
 
-First, run the development server:
+## 技術スタック
+
+- **フレームワーク**: Next.js 16 (App Router)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS v4
+- **DB**: PostgreSQL (Supabase)
+- **ORM**: Prisma v7
+- **認証**: NextAuth v5 (JWT + Credentials)
+- **決済**: Square SDK
+- **画像ストレージ**: Supabase Storage
+
+## 開発環境のセットアップ
+
+### 1. 依存関係のインストール
+
+```bash
+npm install --legacy-peer-deps
+```
+
+### 2. 環境変数の設定
+
+プロジェクトルートに `.env` を作成して以下を設定する。
+普通にセキュリティとしてやばいので削除
+
+### 3. Prisma Clientの生成
+
+```bash
+npx prisma generate
+```
+
+### 4. マイグレーションの実行
+
+マイグレーション実行時は `.env` の `DATABASE_URL` を `DIRECT_URL`（ポート5432）に差し替えてから実行する。
+
+```bash
+npx prisma migrate dev --name <migration-name>
+```
+
+実行後は `DATABASE_URL` を元のpooler URL（ポート6543）に戻す。
+
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) で確認できる。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ディレクトリ構成
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  shop/         # 一般ユーザー向けページ
+  admin/        # 管理者向けページ
+  legal/        # 特商法・利用規約・プライバシーポリシー
+lib/
+  api/          # サーバーサイドのデータアクセス関数（"use server"）
+  prisma.ts     # Prisma Clientのシングルトン
+src/
+  feature/      # 機能単位のコンポーネント・ロジック
+  hooks/        # カスタムフック
+  types/        # 型定義
+prisma/
+  schema.prisma # DBスキーマ
+```
 
-## Learn More
+## APIの仕様
 
-To learn more about Next.js, take a look at the following resources:
+Next.js の Server Actions を使用しており、URLを叩くREST APIではなく `lib/api/` 配下の関数を直接 Server Component から呼び出す形で使用する。すべて `"use server"` ディレクティブで宣言されている。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 商品 (`lib/api/products.ts`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| 関数 | 説明 |
+|------|------|
+| `getNonProducts()` | ノンニコチン商品を全件取得 |
+| `getNonProductsInStock()` | 在庫あり（stock > 0）のノンニコチン商品を取得 |
+| `getNicProducts()` | ニコチン商品を全件取得 |
+| `getNicProductsInStock()` | 在庫あり（stock > 0）のニコチン商品を取得 |
+| `getNicProductById(id)` | IDでニコチン商品を1件取得 |
 
-## Deploy on Vercel
+### 決済・クーポン (`lib/api/payments.ts`, `lib/api/purchase.ts`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| 関数 | 説明 |
+|------|------|
+| `getPaymentsData()` | 全注文をPaymentItemを含めて取得 |
+| `makePaymentsData(payment)` | 注文データを保存（未実装） |
+| `applyCoupon(code)` | クーポンコードを検証して割引率を返す |
+| `handlePurchase(price, products)` | 購入処理（未実装） |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### お問い合わせ (`lib/api/contacts.ts`)
+
+| 関数 | 説明 |
+|------|------|
+| `submitContact(formData)` | フォームからお問い合わせを保存 |
+| `saveContact(contact)` | ContactInput型からお問い合わせを保存 |
+| `getContacts()` | お問い合わせを全件取得 |
+
+### 常連顧客 (`lib/api/regularCustomer.ts`)
+
+| 関数 | 説明 |
+|------|------|
+| `getRegularCustomer()` | 常連顧客を全件取得 |
+
+## 認証
+
+NextAuth v5のCredentialsプロバイダを使用。ログイン時にAdminテーブルを優先して検索し、見つからなければUserテーブルを検索する。JWTに `type: "admin" | "user"` を付与して権限管理を行う。
+
+`/admin/*` へのアクセスは `middleware.ts` でセッションcookieの存在チェックを行い、未認証の場合は `/admin/login` にリダイレクトする。
+
+## カートの仕様
+
+カートデータは `localStorage`（キー：`meltypuff_cart`）に `CartItem[]` として保存する。`cartUpdated` カスタムイベントを発火することでタブ間・コンポーネント間の同期を行う。
+
