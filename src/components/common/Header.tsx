@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
     { href: "/shop/article", label: "Article" },
@@ -9,30 +9,17 @@ const NAV_ITEMS = [
     { href: "/shop/login", label: "Login" },
 ];
 
-const SHOP_MENU = [
-    { href: "/shop/shop-non", label: "ノンニコチン" },
-    { href: "/shop/shop-nic", label: "ニコチン" },
-];
+interface HeaderProps {
+    variant?: "light" | "dark"
+}
 
-export default function Header({
-    positionClass = "fixed",
-}: {
-    positionClass?: string;
-}) {
-    const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopRef = useRef<HTMLLIElement>(null);
+export default function Header({ variant = "dark" }: HeaderProps) {
     const [cartCount, setCartCount] = useState(0);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (shopRef.current && !shopRef.current.contains(event.target as Node)) {
-                setIsShopOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    const textColor = variant === "dark" ? "text-white" : "text-black";
+    const borderColor = variant === "dark" ? "border-white/20" : "border-black";
+    const navBorderColor = variant === "dark" ? "border-transparent hover:border-white/30" : "border-transparent hover:border-black/30";
+    const cartBorderColor = variant === "dark" ? "border-white/30" : "border-black/30";
 
     useEffect(() => {
         const loadCartCount = () => {
@@ -45,14 +32,11 @@ export default function Header({
 
                 const parsed = JSON.parse(cartRaw);
                 if (Array.isArray(parsed)) {
-                    // 数量合計を正しく計算し、0個でも確実に表示する
-                    const itemsqty = Array.isArray(parsed)
-                        ? parsed.reduce(
-                            (sum, item) =>
-                                sum + (typeof item.qty === "number" ? item.qty : 0),
-                            0
-                        )
-                        : 0;
+                    const itemsqty = parsed.reduce(
+                        (sum, item) =>
+                            sum + (typeof item.qty === "number" ? item.qty : 0),
+                        0
+                    );
                     setCartCount(itemsqty);
                 } else if (Array.isArray(parsed?.items)) {
                     setCartCount(parsed.items.length);
@@ -68,16 +52,9 @@ export default function Header({
 
         loadCartCount();
 
-        // カスタムイベントでカート更新を検知（同じタブ内の変更に対応）
-        const handleCartUpdate = () => {
-            loadCartCount();
-        };
-
-        // 他のタブやウィンドウでlocalStorageが変更された時にカート数を更新
+        const handleCartUpdate = () => loadCartCount();
         const handleStorage = (event: StorageEvent) => {
-            if (event.key === "meltypuff_cart") {
-                loadCartCount();
-            }
+            if (event.key === "meltypuff_cart") loadCartCount();
         };
 
         window.addEventListener("cartUpdated", handleCartUpdate);
@@ -89,55 +66,21 @@ export default function Header({
     }, []);
 
     return (
-        <header className={`fixed inset-x-0 top-3 z-20`}>
-            <div className="mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border border-black px-6 py-3 text-sm shadow-lx backdrop-blur">
+        <header className="fixed inset-x-0 top-3 z-50">
+            <div className={`mx-auto flex w-[92%] max-w-6xl items-center justify-between gap-6 rounded-full border ${borderColor} px-6 py-3 text-sm shadow-lx backdrop-blur`}>
                 <Link href="/" className="flex items-center gap-3 font-semibold">
-                    <img src="/logo/logo.png" className="w-10"></img>
-                    <span className="text-xl tracking-wide text-black">Melty Puff</span>
+                    <img src="/logo/logo.png" className="w-10" />
+                    <span className={`text-xl tracking-wide ${textColor}`}>Melty Puff</span>
                 </Link>
 
-                <nav className="flex flex-1 justify-center text-black">
+                <nav className={`flex flex-1 justify-center ${textColor}`}>
                     <ul className="flex items-center gap-6 text-xl font-medium">
-                        <li ref={shopRef} className="relative">
-                            <button
-                                className="flex items-center gap-1 rounded-full border px-4 py-2 transition-colors duration-200 hover:border-black/30"
-                                onClick={() => setIsShopOpen((prev) => !prev)}
-                            >
-                                Shop
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
-                                    className={`transition-transform duration-200 ${isShopOpen ? "rotate-180" : "rotate-0"
-                                        }`}
-                                >
-                                    <path
-                                        d="M6 9l6 6 6-6"
-                                        stroke="currentColor"
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
-                            </button>
-                            {isShopOpen && (
-                                <div className="absolute left-1/2 top-12 z-50 w-48 -translate-x-1/2 rounded-2xl border border-black/30 bg-white/90 p-3 text-base text-neutral-900 shadow-xl backdrop-blur">
-                                    {SHOP_MENU.map((item) => (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            className="block rounded-xl px-4 py-2 font-medium text-[#b43353] transition hover:bg-[#b43353] hover:text-white"
-                                            onClick={() => setIsShopOpen(false)}
-                                        >
-                                            {item.label}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </li>
+                        <Link
+                            className={`flex items-center gap-1 rounded-full border ${navBorderColor} px-4 py-2 transition-colors duration-200`}
+                            href="/shop/shop-non"
+                        >
+                            Shop
+                        </Link>
                         {NAV_ITEMS.map((item) => (
                             <li key={item.href}>
                                 <Link
@@ -153,7 +96,7 @@ export default function Header({
 
                 <Link
                     href="/shop/cart"
-                    className="relative flex items-center gap-2 rounded-full border border-black/30 px-4 py-2 font-semibold text-[#b43353] transition"
+                    className={`relative flex items-center gap-2 rounded-full border ${cartBorderColor} px-4 py-2 font-semibold text-[#b43353] transition`}
                 >
                     <svg
                         width="18"
