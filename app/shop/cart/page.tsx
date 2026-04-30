@@ -111,7 +111,10 @@ export default function Cart() {
             <h2 className="text-black text-xl md:text-2xl font-bold mt-6 mb-4">
               クーポンコード
             </h2>
-            <form className="flex gap-2" onSubmit={handleApplyCoupon}>
+            <form
+              className="flex gap-2"
+              onSubmit={handleApplyCoupon}
+            >
               <input
                 type="text"
                 name="coupon"

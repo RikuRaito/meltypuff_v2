@@ -72,7 +72,7 @@ export const useCart = () => {
   const handleChangeQty = (
     itemId: number,
     itemType: string,
-    newQty: number
+    newQty: number,
   ) => {
     // 数量が0以下の場合は削除
     if (newQty <= 0) {
@@ -89,7 +89,7 @@ export const useCart = () => {
 
       // findで該当アイテムを探して数量を更新
       const targetItem = cartArray.find(
-        (item) => item.id === itemId && item.type === itemType
+        (item) => item.id === itemId && item.type === itemType,
       );
 
       if (targetItem) {
@@ -117,7 +117,7 @@ export const useCart = () => {
 
       // 該当アイテムを削除
       const filteredArray = cartArray.filter(
-        (item) => !(item.id === itemId && item.type === itemType)
+        (item) => !(item.id === itemId && item.type === itemType),
       );
 
       localStorage.setItem("meltypuff_cart", JSON.stringify(filteredArray));

@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // 管理者のパスワードを検証
             const isPasswordValid = await compare(
               credentials.password as string,
-              admin.passwd
+              admin.passwd,
             );
 
             if (!isPasswordValid) {
@@ -58,7 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // ユーザーのパスワードを検証
           const isPasswordValid = await compare(
             credentials.password as string,
-            user.passwd
+            user.passwd,
           );
 
           if (!isPasswordValid) {

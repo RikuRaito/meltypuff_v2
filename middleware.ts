@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     const hasSessionCookie = cookies.some(
       (cookie) =>
         cookie.name.includes("next-auth.session-token") ||
-        cookie.name.includes("__Secure-next-auth.session-token")
+        cookie.name.includes("__Secure-next-auth.session-token"),
     );
 
     // セッションcookieがない場合、ログインページにリダイレクト

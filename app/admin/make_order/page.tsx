@@ -14,7 +14,10 @@ export default async function MakeOrderPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <MakeOrder customers={customersList} products={[]} />
+      <MakeOrder
+        customers={customersList}
+        products={[]}
+      />
     </div>
   );
 }
