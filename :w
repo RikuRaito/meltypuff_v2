@@ -11,7 +11,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [qty, setQty] = useState<number>(1);
   const [isQtyChangeOpen, setIsQtyChangeOpen] = useState<boolean>(false);
-  const { handleAddToCart } = useProductCard();
+  const {handleAddToCart()} = useProductCard()
 
   return (
     <div className="w-40 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
@@ -60,10 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </ul>
           </>
         )}
-        <button
-          className=" px-2 rounded text-white bg-[#d1505c]"
-          onClick={() => handleAddToCart(product.id, qty)}
-        >
+        <button className=" px-2 rounded text-white bg-[#d1505c]">
           <p className="text-xl font-semibold">カートに追加</p>
         </button>
       </div>
