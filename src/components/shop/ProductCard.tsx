@@ -23,7 +23,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="object-contain"
         />
       </div>
-      <div>
+      <div className="mb-3">
         <p className="text-xl text-black px-3 font-semibold">
           {product.displayName}
         </p>
@@ -31,12 +31,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           ¥{product.price}
         </p>
       </div>
-      <div className="px-2 flex gap-2">
+      <div className="sm:px-2 flex sm:gap-2 px-3 gap-4 ">
         <button
           onClick={() => setIsQtyChangeOpen(true)}
           className="px-3 py-1 border border-gray-300 rounded "
         >
-          <p className="text-black font-semibold">数量：{qty}</p>
+          <p className="text-black font-semibold sm:text-base text-xs">
+            <span className="sm:hidden">{qty}</span>
+            <span className="hidden sm:inline">数量：{qty}</span>
+          </p>
         </button>
         {isQtyChangeOpen && (
           <>
@@ -64,7 +67,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           className=" px-2 rounded text-white bg-[#d1505c]"
           onClick={() => handleAddToCart(product.id, qty)}
         >
-          <p className="text-xl font-semibold">カートに追加</p>
+          <p className="text-xl font-semibold">
+            <span className="sm:hidden">カート</span>
+            <span className="hidden sm:inline">カートに追加</span>
+          </p>
         </button>
       </div>
     </div>

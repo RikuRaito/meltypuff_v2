@@ -8,9 +8,10 @@ export const getNonProducts = async () => {
   try {
     const products = await prisma.product_Non.findMany({
       orderBy: {
-        id: "asc",
+        recommend: "asc",
       },
     });
+    console.log("products:", products);
     return products;
   } catch (error) {
     console.error("商品データの取得に失敗しました: ", error);
@@ -28,7 +29,7 @@ export const getNonProductsInStock = async () => {
         },
       },
       orderBy: {
-        id: "asc",
+        recommend: "asc",
       },
     });
     return prismaData;
