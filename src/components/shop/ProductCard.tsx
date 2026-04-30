@@ -14,7 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { handleAddToCart } = useProductCard();
 
   return (
-    <div className="w-40 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
+    <div className="w-32 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
       <div className="relative w-full aspect-square mb-3 overflow-hidden">
         <Image
           src={product.imagePath[0]}
@@ -24,10 +24,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
       </div>
       <div className="mb-3">
-        <p className="text-xl text-black px-3 font-semibold">
+        <p className="text-sm sm:text-xl text-black px-3 font-semibold">
           {product.displayName}
         </p>
-        <p className="text-xl text-black font-semibold px-3">
+        <p className="text-sm sm:text-xl text-black font-semibold px-3">
           ¥{product.price}
         </p>
       </div>
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           className=" px-2 rounded text-white bg-[#d1505c]"
           onClick={() => handleAddToCart(product.id, qty)}
         >
-          <p className="text-xl font-semibold">
+          <p className="text-xs sm:text-xl font-semibold">
             <span className="sm:hidden">カート</span>
             <span className="hidden sm:inline">カートに追加</span>
           </p>
