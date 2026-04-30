@@ -32,7 +32,7 @@ model Product_Non {
   name String
   recommend Int @default(0)
   displayName String @map("display_name")
-  imagePath String @map("image_path")
+  imagePath String[] @map("image_path")
   price Int
   stock Int
 }
