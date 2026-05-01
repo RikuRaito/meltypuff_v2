@@ -23,11 +23,6 @@ export const getNonProducts = async () => {
 export const getNonProductsInStock = async () => {
   try {
     const prismaData = await prisma.product_Non.findMany({
-      where: {
-        stock: {
-          gt: 0,
-        },
-      },
       orderBy: {
         recommend: "asc",
       },
