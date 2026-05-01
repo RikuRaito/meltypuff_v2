@@ -34,6 +34,20 @@ export const getNonProductsInStock = async () => {
   }
 };
 
+export const getNonProductsById = async (productId: number) => {
+  try {
+    const prismaData = await prisma.product_Non.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+    return prismaData;
+  } catch (error) {
+    console.error("商品データの取得に失敗しました：", error);
+    throw error;
+  }
+};
+
 // TODO: issue #21 ニコチン商品削除時に以下のコードも削除する
 // /**ニコチン商品に関する関数 */
 // export const getNicProducts = async () => { ... };

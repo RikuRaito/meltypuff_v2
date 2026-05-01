@@ -3,6 +3,7 @@ import { Product_Non } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import { useProductCard } from "@/src/hooks/useProductCard";
+import Link from "next/link";
 
 interface ProductCardProps {
   product: Product_Non;
@@ -15,14 +16,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="w-32 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
-      <div className="relative w-full aspect-square mb-3 overflow-hidden">
-        <Image
-          src={product.imagePath[0]}
-          alt={product.displayName}
-          fill
-          className="object-contain"
-        />
-      </div>
+      <Link href={`/shop/shop-non/${product.id}`}>
+        <div className="relative w-full aspect-square mb-3 overflow-hidden">
+          <Image
+            src={product.imagePath[0]}
+            alt={product.displayName}
+            fill
+            className="object-contain"
+          />
+        </div>
+      </Link>
+
       <div className="mb-3">
         <p className="text-sm sm:text-xl text-black px-3 font-semibold">
           {product.displayName}
