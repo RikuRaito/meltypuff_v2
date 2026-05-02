@@ -35,6 +35,7 @@ model Product_Non {
   imagePath String[] @map("image_path")
   price Int
   stock Int
+  description String @default("")
 }
 
 model Coupon {

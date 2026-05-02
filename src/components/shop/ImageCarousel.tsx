@@ -23,7 +23,7 @@ export default function ImageCarousel({ images }: { images: string[] }) {
   return (
     <div>
       <div
-        className="border border-gray-300 overflow-hidden sm:w-[400px] w-[170px]"
+        className="border border-gray-300 overflow-hidden sm:w-[300px] w-[170px]"
         ref={emblaRef}
       >
         <div className="flex">

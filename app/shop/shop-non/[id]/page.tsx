@@ -19,7 +19,7 @@ export default async function ProductDetail({
       </div>
       <div className="flex flex-row gap-6">
         {productDetail && <ImageCarousel images={productDetail.imagePath} />}
-        <div className="flex flex-col justify-between pt-4 pb-6">
+        <div className="flex flex-col justify-between pt-2 pb-6">
           <p className="text-black font-bold text-xl">
             {productDetail?.displayName}
           </p>
