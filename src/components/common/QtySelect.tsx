@@ -4,9 +4,10 @@ import { useRef, useState } from "react";
 interface QtySelectProps {
   qty: number;
   onChange: (n: number) => void;
+  size?: "sm" | "default";
 }
 
-export const QtySelect = ({ qty, onChange }: QtySelectProps) => {
+export const QtySelect = ({ qty, onChange, size = "default" }: QtySelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropUp, setDropUp] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -19,12 +20,16 @@ export const QtySelect = ({ qty, onChange }: QtySelectProps) => {
     setIsOpen(true);
   };
 
+  const buttonClass = size === "sm"
+    ? "w-full px-2 py-1 border border-gray-300 rounded text-black font-semibold text-xs"
+    : "w-full px-3 py-2 border border-gray-300 rounded text-black font-semibold";
+
   return (
     <div className="relative">
       <button
         ref={buttonRef}
         onClick={handleOpen}
-        className="w-full px-3 py-2 border border-gray-300 rounded text-black font-semibold"
+        className={buttonClass}
       >
         数量：{qty}
       </button>
