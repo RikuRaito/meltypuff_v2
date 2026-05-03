@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useProductCard } from "@/src/hooks/useProductCard";
 import Link from "next/link";
+import { QtySelect } from "@/src/components/common/QtySelect";
 
 interface ProductCardProps {
   product: Product_Non;
@@ -11,7 +12,6 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [qty, setQty] = useState<number>(1);
-  const [isQtyChangeOpen, setIsQtyChangeOpen] = useState<boolean>(false);
   const { handleAddToCart, isAddedToCart, setIsAddedToCart } = useProductCard();
 
   return (
@@ -35,40 +35,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           ¥{product.price}
         </p>
       </div>
-      <div className="sm:px-2 flex sm:gap-2 px-3 gap-4 ">
+      <div className="sm:px-2 flex sm:gap-2 px-3 gap-4">
+        <QtySelect qty={qty} onChange={(n) => setQty(n)} />
         <button
-          onClick={() => setIsQtyChangeOpen(true)}
-          className="px-3 py-1 border border-gray-300 rounded "
-        >
-          <p className="text-black font-semibold sm:text-base text-xs">
-            <span className="sm:hidden">{qty}</span>
-            <span className="hidden sm:inline">数量：{qty}</span>
-          </p>
-        </button>
-        {isQtyChangeOpen && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/40 z-10"
-              onClick={() => setIsQtyChangeOpen(false)}
-            />
-            <ul className="absolute z-20 top-0 left-10 mb-1 w-24 bg-white border border-gray-300 rounded shadow-xl">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                <li
-                  key={n}
-                  onClick={() => {
-                    setQty(n);
-                    setIsQtyChangeOpen(false);
-                  }}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black"
-                >
-                  {n}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-        <button
-          className=" px-2 rounded text-white bg-[#d1505c] hover:bg-[#a33845]"
+          className="flex-1 px-2 rounded text-white bg-[#d1505c] hover:bg-[#a33845]"
           onClick={() => handleAddToCart(product.id, qty)}
         >
           <p className="text-xs sm:text-xl font-semibold">

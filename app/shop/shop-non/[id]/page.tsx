@@ -12,6 +12,7 @@ export default async function ProductDetail({
 
   return (
     <main className="pt-30 w-[90%] sm:w-[92%] max-w-6xl mx-auto pb-16">
+      <h1 className="text-2xl text-black mb-6 font-bold">商品詳細</h1>
       <div className="flex flex-row gap-4 sm:gap-8">
         {productDetail && <ImageCarousel images={productDetail.imagePath} />}
         <div className="flex flex-col gap-2 sm:gap-4 flex-1">
