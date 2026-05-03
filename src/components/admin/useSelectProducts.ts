@@ -45,7 +45,7 @@ export const useSelectProducts = () => {
         return prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
-            : item
+            : item,
         );
       }
       // 新規追加
@@ -62,7 +62,7 @@ export const useSelectProducts = () => {
   // 注文から削除
   const removeFromOrder = (productId: number) => {
     setOrderItems((prev) =>
-      prev.filter((item) => item.product.id !== productId)
+      prev.filter((item) => item.product.id !== productId),
     );
   };
 
@@ -75,15 +75,15 @@ export const useSelectProducts = () => {
 
     setOrderItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+        item.product.id === productId ? { ...item, quantity } : item,
+      ),
     );
   };
 
   // 合計金額を計算
   const totalPrice = orderItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
-    0
+    0,
   );
 
   // 注文をクリア

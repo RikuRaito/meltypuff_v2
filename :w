@@ -1,0 +1,69 @@
+"use client";
+import { Product_Non } from "@prisma/client";
+import Image from "next/image";
+import { useState } from "react";
+import { useProductCard } from "@/src/hooks/useProductCard";
+
+interface ProductCardProps {
+  product: Product_Non;
+}
+
+export default function ProductCard({ product }: ProductCardProps) {
+  const [qty, setQty] = useState<number>(1);
+  const [isQtyChangeOpen, setIsQtyChangeOpen] = useState<boolean>(false);
+  const {handleAddToCart()} = useProductCard()
+
+  return (
+    <div className="w-40 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
+      <div className="relative w-full aspect-square mb-3 overflow-hidden">
+        <Image
+          src={product.imagePath[0]}
+          alt={product.displayName}
+          fill
+          className="object-contain"
+        />
+      </div>
+      <div>
+        <p className="text-xl text-black px-3 font-semibold">
+          {product.displayName}
+        </p>
+        <p className="text-xl text-black font-semibold px-3">
+          ¥{product.price}
+        </p>
+      </div>
+      <div className="px-2 flex gap-2">
+        <button
+          onClick={() => setIsQtyChangeOpen(true)}
+          className="px-3 py-1 border border-gray-300 rounded "
+        >
+          <p className="text-black font-semibold">数量：{qty}</p>
+        </button>
+        {isQtyChangeOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 z-10"
+              onClick={() => setIsQtyChangeOpen(false)}
+            />
+            <ul className="absolute z-20 top-0 left-10 mb-1 w-24 bg-white border border-gray-300 rounded shadow-xl">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                <li
+                  key={n}
+                  onClick={() => {
+                    setQty(n);
+                    setIsQtyChangeOpen(false);
+                  }}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black"
+                >
+                  {n}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <button className=" px-2 rounded text-white bg-[#d1505c]">
+          <p className="text-xl font-semibold">カートに追加</p>
+        </button>
+      </div>
+    </div>
+  );
+}

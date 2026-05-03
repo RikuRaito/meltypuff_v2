@@ -102,7 +102,10 @@ export default function Contact() {
       </h2>
       <div className="space-y-8">
         {FAQ_CATEGORIES.map((category, categoryIndex) => (
-          <div key={categoryIndex} className="space-y-4">
+          <div
+            key={categoryIndex}
+            className="space-y-4"
+          >
             <h3 className="text-[#b43353] font-bold text-2xl">
               {category.title}
             </h3>
@@ -168,7 +171,7 @@ export default function Contact() {
                   alert(result.message);
                   // フォームをリセット
                   const form = document.querySelector(
-                    "form"
+                    "form",
                   ) as HTMLFormElement;
                   form?.reset();
                 } else {

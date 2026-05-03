@@ -24,7 +24,7 @@ type SubmitResult = {
 
 //お問い合わせ内容の保存（FormDataから）
 export const submitContact = async (
-  formData: FormData
+  formData: FormData,
 ): Promise<SubmitResult> => {
   try {
     const name = formData.get("name") as string;

@@ -152,7 +152,7 @@ export const MakeOrder = ({ customers, products }: Props) => {
                   onChange={(e) =>
                     handleQuantityChange(
                       product.id,
-                      parseInt(e.target.value) || 1
+                      parseInt(e.target.value) || 1,
                     )
                   }
                   className="w-16 text-center border border-gray-300 rounded px-2 py-1 text-gray-900"
@@ -214,7 +214,7 @@ export const MakeOrder = ({ customers, products }: Props) => {
                         onClick={() =>
                           updateOrderQuantity(
                             item.product.id,
-                            item.quantity - 1
+                            item.quantity - 1,
                           )
                         }
                         className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100"
@@ -228,7 +228,7 @@ export const MakeOrder = ({ customers, products }: Props) => {
                         onClick={() =>
                           updateOrderQuantity(
                             item.product.id,
-                            item.quantity + 1
+                            item.quantity + 1,
                           )
                         }
                         className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100"

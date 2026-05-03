@@ -8,9 +8,10 @@ export const getNonProducts = async () => {
   try {
     const products = await prisma.product_Non.findMany({
       orderBy: {
-        id: "asc",
+        recommend: "asc",
       },
     });
+    console.log("products:", products);
     return products;
   } catch (error) {
     console.error("商品データの取得に失敗しました: ", error);
@@ -22,13 +23,22 @@ export const getNonProducts = async () => {
 export const getNonProductsInStock = async () => {
   try {
     const prismaData = await prisma.product_Non.findMany({
-      where: {
-        stock: {
-          gt: 0,
-        },
-      },
       orderBy: {
-        id: "asc",
+        recommend: "asc",
+      },
+    });
+    return prismaData;
+  } catch (error) {
+    console.error("商品データの取得に失敗しました：", error);
+    throw error;
+  }
+};
+
+export const getNonProductsById = async (productId: number) => {
+  try {
+    const prismaData = await prisma.product_Non.findUnique({
+      where: {
+        id: productId,
       },
     });
     return prismaData;
