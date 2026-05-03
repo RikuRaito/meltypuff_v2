@@ -5,6 +5,6 @@ import Header from "./Header";
 
 export default function ShopHeader() {
   const pathname = usePathname();
-  const variant = pathname?.startsWith("/shop/home") ? "dark" : "light";
-  return <Header variant={variant} />;
+  const initialVariant = pathname?.startsWith("/shop/home") ? "dark" : "light";
+  return <Header variant={initialVariant} />;
 }
