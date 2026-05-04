@@ -1,9 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/types/CartItem";
+import { getNonProductsById } from "@/lib/api/products";
+
+interface CartsWithData {
+  id: number;
+  qty: number;
+  displayName: string;
+  image: string;
+  price: string;
+}
 
 export const useCart = () => {
   const [carts, setCarts] = useState<CartItem[]>([]);
+  const [cartsWithData, setCartsWithData] = useState<CartsWithData[]>([]);
 
   useEffect(() => {
     const loadCartData = () => {
@@ -77,9 +87,33 @@ export const useCart = () => {
     }
   };
 
+  useEffect(() => {
+    if (carts.length === 0) return;
+
+    const fetchData = async () => {
+      const productsData: CartsWithData[] = await Promise.all(
+        carts.map(async (item) => {
+          const res = await fetch(`/api/products/${item.id}`);
+          const product = await res.json();
+          return {
+            id: item.id,
+            qty: item.qty,
+            displayName: product.displayName,
+            image: product.imagePath[0],
+            price: product.price,
+          };
+        }),
+      );
+      console.log("productData:", productsData);
+      setCartsWithData(productsData);
+    };
+    fetchData();
+  }, [carts]);
+
   return {
     carts,
     handleChangeQty,
     handleRemoveItem,
+    cartsWithData,
   };
 };

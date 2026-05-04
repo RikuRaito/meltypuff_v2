@@ -1,8 +1,9 @@
 "use client";
 import { useCart } from "@/src/hooks/useCart";
+import { CartGrid } from "@/src/components/shop/CartGrid";
 
 export default function Cart() {
-  const { carts, handleChangeQty, handleRemoveItem } = useCart();
+  const { carts, handleChangeQty, handleRemoveItem, cartsWithData } = useCart();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -10,40 +11,17 @@ export default function Cart() {
         <h1 className="text-black mt-15 mb-7 text-xl font-bold md:text-3xl text-left">
           カート
         </h1>
-        <div className="flex flex-col gap-4">
-          {carts.length > 0 &&
-            carts.map((item) => (
-              <div
-                key={`${item.type}-${item.id}`}
-                className="flex flex-row items-center gap-4 p-4 border border-gray-200 rounded-lg"
-              >
-                <div className="flex-1">
-                  <p className="text-black font-semibold">商品ID: {item.id}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm text-gray-600">数量:</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.qty}
-                    onChange={(e) => {
-                      const newQty = parseInt(e.target.value, 10);
-                      if (!isNaN(newQty)) {
-                        handleChangeQty(item.id, item.type, newQty);
-                      }
-                    }}
-                    className="w-16 text-center border border-gray-300 rounded px-2 py-1 text-black"
-                  />
-                </div>
-                <button
-                  onClick={() => handleRemoveItem(item.id, item.type)}
-                  className="text-sm text-red-500 hover:text-red-700"
-                >
-                  削除
-                </button>
-              </div>
-            ))}
-        </div>
+        {cartsWithData.map((item) => (
+          <CartGrid
+            key={item.id}
+            productId={item.id}
+            displayName={item.displayName}
+            productImage={item.image}
+            price={item.price}
+            qty={item.qty}
+            onQtyChange={handleChangeQty}
+          />
+        ))}
         {carts.length === 0 && (
           <div className="text-gray-500 text-center py-10">
             カートに商品がありません。
