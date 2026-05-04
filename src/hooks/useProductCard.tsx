@@ -7,14 +7,12 @@ export const useProductCard = () => {
   const handleAddToCart = (productId: number, qty: number) => {
     const cartRaw = localStorage.getItem("meltypuff_cart");
     const cartArray: CartItem[] = cartRaw ? JSON.parse(cartRaw) : [];
-    const existingItem = cartArray.find(
-      (item) => item.id === productId && item.type === "non",
-    );
+    const existingItem = cartArray.find((item) => item.id === productId);
 
     if (existingItem) {
       existingItem.qty += qty;
     } else {
-      cartArray.push({ id: productId, qty: qty, type: "non" });
+      cartArray.push({ id: productId, qty: qty });
     }
     localStorage.setItem("meltypuff_cart", JSON.stringify(cartArray));
     window.dispatchEvent(new Event("cartUpdated"));

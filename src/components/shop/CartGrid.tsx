@@ -8,6 +8,7 @@ interface CartGridProps {
   productImage: string;
   price: string;
   qty: number;
+  handleItemRemove: (itemId: number) => void;
 }
 
 export const CartGrid = ({
@@ -16,6 +17,7 @@ export const CartGrid = ({
   productImage,
   price,
   qty,
+  handleItemRemove,
 }: CartGridProps) => {
   const handleQtyChange = (newQty: number) => {
     const cartRaw = localStorage.getItem("meltypuff_cart");
@@ -42,16 +44,27 @@ export const CartGrid = ({
           className="object-contain"
         />
       </div>
-      <div className="flex flex-col gap-2 py-2 flex-1">
+      <div className="flex flex-col justify-between gap-2 py-2 flex-1">
         <p className="text-black font-semibold sm:text-xl">{displayName}</p>
         <p className="text-black font-semibold sm:text-xl">¥{price}</p>
       </div>
-      <div>
-        <QtySelect
-          qty={qty}
-          onChange={handleQtyChange}
-        />
+      <div className="flex flex-col gap-3 ">
+        <div>
+          <QtySelect
+            qty={qty}
+            onChange={handleQtyChange}
+          />
+        </div>
+        <div>
+          <button
+            onClick={() => handleItemRemove(productId)}
+            className="border border-gray-300 rounded w-full py-2"
+          >
+            <p className="text-red-500 text-sm font-semibold">削除</p>
+          </button>
+        </div>
       </div>
+      <div></div>
     </div>
   );
 };

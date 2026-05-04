@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/types/CartItem";
-import { getNonProductsById } from "@/lib/api/products";
 
 interface CartsWithData {
   id: number;
@@ -46,22 +45,16 @@ export const useCart = () => {
     };
   }, []);
 
-  const handleChangeQty = (
-    itemId: number,
-    itemType: string,
-    newQty: number,
-  ) => {
+  const handleChangeQty = (itemId: number, newQty: number) => {
     if (newQty <= 0) {
-      handleRemoveItem(itemId, itemType);
+      handleRemoveItem(itemId);
       return;
     }
     try {
       const cartRaw = window.localStorage.getItem("meltypuff_cart");
       if (!cartRaw) return;
       const cartArray: CartItem[] = JSON.parse(cartRaw);
-      const targetItem = cartArray.find(
-        (item) => item.id === itemId && item.type === itemType,
-      );
+      const targetItem = cartArray.find((item) => item.id === itemId);
       if (targetItem) {
         targetItem.qty = newQty;
         localStorage.setItem("meltypuff_cart", JSON.stringify(cartArray));
@@ -72,14 +65,12 @@ export const useCart = () => {
     }
   };
 
-  const handleRemoveItem = (itemId: number, itemType: string) => {
+  const handleRemoveItem = (itemId: number) => {
     try {
       const cartRaw = window.localStorage.getItem("meltypuff_cart");
       if (!cartRaw) return;
       const cartArray: CartItem[] = JSON.parse(cartRaw);
-      const filteredArray = cartArray.filter(
-        (item) => !(item.id === itemId && item.type === itemType),
-      );
+      const filteredArray = cartArray.filter((item) => item.id !== itemId);
       localStorage.setItem("meltypuff_cart", JSON.stringify(filteredArray));
       window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
@@ -88,9 +79,11 @@ export const useCart = () => {
   };
 
   useEffect(() => {
-    if (carts.length === 0) return;
-
     const fetchData = async () => {
+      if (carts.length === 0) {
+        setCartsWithData([]);
+        return;
+      }
       const productsData: CartsWithData[] = await Promise.all(
         carts.map(async (item) => {
           const res = await fetch(`/api/products/${item.id}`);
@@ -104,7 +97,6 @@ export const useCart = () => {
           };
         }),
       );
-      console.log("productData:", productsData);
       setCartsWithData(productsData);
     };
     fetchData();

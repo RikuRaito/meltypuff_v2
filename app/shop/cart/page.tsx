@@ -3,7 +3,7 @@ import { useCart } from "@/src/hooks/useCart";
 import { CartGrid } from "@/src/components/shop/CartGrid";
 
 export default function Cart() {
-  const { carts, handleChangeQty, handleRemoveItem, cartsWithData } = useCart();
+  const { carts, cartsWithData, handleRemoveItem } = useCart();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,7 +19,7 @@ export default function Cart() {
             productImage={item.image}
             price={item.price}
             qty={item.qty}
-            onQtyChange={handleChangeQty}
+            handleItemRemove={handleRemoveItem}
           />
         ))}
         {carts.length === 0 && (
