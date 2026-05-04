@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { handleCheckout } from "@/lib/actions/checkout";
 
-export const SquareCardForm = () => {
+interface SquareCardFormProps {
+  amount: number;
+}
+
+export const SquareCardForm = ({ amount }: SquareCardFormProps) => {
   const initializedRef = useRef(false);
   const cardRef = useRef<SquareCard | null>(null);
 
@@ -28,11 +33,14 @@ export const SquareCardForm = () => {
     };
   }, []);
 
+  console.log("amount: ", amount, typeof amount);
+
   const handlePayment = async () => {
     if (!cardRef.current) return;
     const result = await cardRef.current.tokenize();
     if (result.status === "OK") {
       console.log("token:", result.token);
+      handleCheckout(result.token!, amount);
     } else {
       console.error("tokenize error:", result.errors);
     }

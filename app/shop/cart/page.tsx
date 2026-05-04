@@ -7,6 +7,11 @@ import { SquareCardForm } from "@/src/components/shop/SquareCardForm";
 export default function Cart() {
   const { carts, cartsWithData, handleRemoveItem } = useCart();
   const [isPaymentFormOpen, setIsPaymentFormOpen] = useState<boolean>(false);
+  const [amount, setAmount] = useState(0);
+
+  const totalAmount = cartsWithData.reduce((sum, item) => {
+    return sum + Number(item.price) * item.qty;
+  }, 250);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -53,7 +58,7 @@ export default function Cart() {
             onClick={() => setIsPaymentFormOpen(false)}
           />
           <div className="fixed overflow-y-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 w-[90%] max-w-sm max-h-[90vh]">
-            <SquareCardForm />
+            <SquareCardForm amount={totalAmount} />
           </div>
         </>
       )}
