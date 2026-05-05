@@ -25,7 +25,7 @@ export default function MenuBar() {
   return (
     <div>
       <nav className="flex flex-col p-4">
-        <ul className="space-y-2 mt-5">
+        <ul className="space-y-2 mt-8">
           {NAV_ITEMS.map((menu) => (
             <li key={menu.href}>
               <Link
