@@ -126,6 +126,9 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
         <p className="text-black font-bold text-xl mb-2">
           注文ID:{paymentUuid}
         </p>
+        <p className="text-black font-bold text-xl mb-2">
+          確認メールを送信しました
+        </p>
         <p className="text-gray-600">ご注文ありがとうございました。</p>
       </div>
     );
