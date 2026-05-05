@@ -1,14 +1,24 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { handleCheckout } from "@/lib/actions/checkout";
 
 interface SquareCardFormProps {
   amount: number;
+  cartItems: { id: number; qty: number }[];
 }
 
-export const SquareCardForm = ({ amount }: SquareCardFormProps) => {
+export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
   const initializedRef = useRef(false);
   const cardRef = useRef<SquareCard | null>(null);
+  const [isPaymentSucceed, setIsPaymentSucceed] = useState(false);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (initializedRef.current) return;
@@ -33,39 +43,147 @@ export const SquareCardForm = ({ amount }: SquareCardFormProps) => {
     };
   }, []);
 
-  console.log("amount: ", amount, typeof amount);
+  const validate = () => {
+    if (
+      !name ||
+      !email ||
+      !email.includes("@") ||
+      !phone ||
+      zipCode.length !== 7 ||
+      !address1
+    )
+      return false;
+    return true;
+  };
 
   const handlePayment = async () => {
+    if (!validate()) {
+      setError("入力に誤りがあります");
+      return;
+    }
     if (!cardRef.current) return;
     const result = await cardRef.current.tokenize();
     if (result.status === "OK") {
-      console.log("token:", result.token);
-      handleCheckout(result.token!, amount);
+      const res = await handleCheckout(
+        result.token!,
+        amount,
+        {
+          name,
+          email,
+          phone,
+          zipCode,
+          address1,
+          address2,
+        },
+        cartItems,
+      );
+      if (res?.success) {
+        setIsPaymentSucceed(true);
+        localStorage.removeItem("meltypuff_cart");
+        window.dispatchEvent(new Event("cartUpdated"));
+      }
     } else {
       console.error("tokenize error:", result.errors);
     }
   };
 
+  useEffect(() => {
+    if (zipCode.length !== 7) return;
+    const searchAddress = async () => {
+      const res = await fetch(
+        `https://zipcloud.ibsnet.co.jp/api/search?zipcode=${zipCode}`,
+      );
+      const data = await res.json();
+
+      if (!data.results) return;
+      console.log("data:", data);
+      const address =
+        data.results[0].address1 +
+        data.results[0].address2 +
+        data.results[0].address3;
+      setAddress1(address);
+    };
+    searchAddress();
+  }, [zipCode]);
+
+  if (isPaymentSucceed) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-black font-bold text-xl mb-2">決済が完了しました</p>
+        <p className="text-gray-600">ご注文ありがとうございました。</p>
+      </div>
+    );
+  }
+
+  const inputClass =
+    "w-full border border-gray-300 rounded px-3 py-2 text-black text-sm";
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
+        <input
+          placeholder="お名前"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className={inputClass}
+        />
+        <div className="flex gap-2">
+          <input
+            placeholder="メールアドレス"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={inputClass}
+          />
+          <input
+            placeholder="電話番号"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+        <input
+          placeholder="郵便番号（ハイフンなし）"
+          value={zipCode}
+          onChange={(e) => setZipCode(e.target.value)}
+          className={inputClass}
+        />
+        <input
+          placeholder="住所1"
+          value={address1}
+          onChange={(e) => setAddress1(e.target.value)}
+          className={inputClass}
+        />
+        <input
+          placeholder="住所2（任意）"
+          value={address2}
+          onChange={(e) => setAddress2(e.target.value)}
+          className={inputClass}
+        />
+      </div>
+
+      <hr className="border-gray-200" />
+
       <div
         id="card-container"
         className="-mb-4"
       />
-      <div className="w-full text-center mb-4">
-        <p className="text-black font-light mb-4">
-          カード情報を入力してください
-        </p>
-        <p className="text-black font-light mb-3">
-          決済はSquareの決済サービスを通し、
-          <br />
-          安全に行われます
+      {error !== "" && (
+        <div>
+          <p className="text-red-500 text-xs font-light">{error}</p>
+        </div>
+      )}
+
+      <div className="w-full text-center">
+        <p className="text-gray-500 text-xs">
+          決済はSquareの決済サービスを通し、安全に行われます
         </p>
       </div>
 
       <button
         onClick={handlePayment}
-        className="text-white sm:text-xl border bg-[#b43353] font-bold hover:bg-[#9a2a45] rounded-full text-lg px-6 py-2 transition-colors"
+        className="w-full text-white bg-[#b43353] font-bold hover:bg-[#9a2a45] rounded-full py-2 transition-colors"
       >
         確定
       </button>

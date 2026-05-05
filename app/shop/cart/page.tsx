@@ -58,7 +58,10 @@ export default function Cart() {
             onClick={() => setIsPaymentFormOpen(false)}
           />
           <div className="fixed overflow-y-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 w-[90%] max-w-sm max-h-[90vh]">
-            <SquareCardForm amount={totalAmount} />
+            <SquareCardForm
+              amount={totalAmount}
+              cartItems={carts}
+            />
           </div>
         </>
       )}
