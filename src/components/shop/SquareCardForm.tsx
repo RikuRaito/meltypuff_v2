@@ -12,6 +12,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
   const cardRef = useRef<SquareCard | null>(null);
   const [isPaymentSucceed, setIsPaymentSucceed] = useState(false);
   const [paymentUuid, setPaymentUuid] = useState<string | null>(null);
+  const [isProcessing, setIsProccessing] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,32 +63,40 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
       setError("入力に誤りがあります");
       return;
     }
-    if (!cardRef.current) return;
-    const result = await cardRef.current.tokenize();
-    if (result.status === "OK") {
-      const res = await handleCheckout(
-        result.token!,
-        amount,
-        {
-          name,
-          email,
-          phone,
-          zipCode,
-          address1,
-          address2,
-        },
-        cartItems,
-      );
-      if (res?.success) {
-        if (res.success && res.uuid) {
-          setPaymentUuid(res.uuid);
+    setIsProccessing(true);
+    try {
+      if (!cardRef.current) return;
+      const result = await cardRef.current.tokenize();
+      if (result.status === "OK") {
+        const res = await handleCheckout(
+          result.token!,
+          amount,
+          {
+            name,
+            email,
+            phone,
+            zipCode,
+            address1,
+            address2,
+          },
+          cartItems,
+        );
+        if (res?.success) {
+          if (res.success && res.uuid) {
+            setPaymentUuid(res.uuid);
+          }
+          setIsPaymentSucceed(true);
+          localStorage.removeItem("meltypuff_cart");
+          window.dispatchEvent(new Event("cartUpdated"));
         }
-        setIsPaymentSucceed(true);
-        localStorage.removeItem("meltypuff_cart");
-        window.dispatchEvent(new Event("cartUpdated"));
+      } else {
+        console.error("tokenize error:", result.errors);
       }
-    } else {
-      console.error("tokenize error:", result.errors);
+    } catch (err) {
+      console.error("決済処理中にエラーが出ました:", err);
+      throw err;
+    } finally {
+      setIsProccessing(false);
     }
   };
 
@@ -150,7 +159,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
             className={inputClass}
           />
         </div>
-        <p className="text-black text-base font-medium pl-3">
+        <p className="text-black text-base font-semibold pl-3">
           配送先住所の入力をしてください
         </p>
         <input
@@ -193,9 +202,32 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
 
       <button
         onClick={handlePayment}
-        className="w-full text-white bg-[#b43353] font-bold hover:bg-[#9a2a45] rounded-full py-2 transition-colors"
+        disabled={isProcessing}
+        className="w-full text-white bg-[#b43353] font-bold hover:bg-[#9a2a45] rounded-full py-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
-        確定
+        {isProcessing && (
+          <svg
+            className="animate-spin h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+          </svg>
+        )}
+        {isProcessing ? "処理中..." : "確定"}
       </button>
     </div>
   );

@@ -72,7 +72,7 @@ export const handleCheckout = async (
       },
     });
 
-    sendConfirmationEmail(customer.email, payment.uuid);
+    await sendConfirmationEmail(customer.email, payment.uuid);
 
     return { success: true, uuid: payment.uuid };
   } catch (err) {
