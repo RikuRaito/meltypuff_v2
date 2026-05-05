@@ -21,7 +21,7 @@ export const handleCheckout = async (
   token: string,
   amount: number,
   customer: CustomerInfo,
-  cartItems: { id: number; qty: number }[]
+  cartItems: { id: number; qty: number }[],
 ) => {
   try {
     const response = await client.payments.create({
@@ -41,7 +41,7 @@ export const handleCheckout = async (
       cartItems.map(async (item) => {
         const product = await getNonProductsById(item.id);
         return { product, qty: item.qty };
-      })
+      }),
     );
 
     await prisma.payment.create({
@@ -53,7 +53,7 @@ export const handleCheckout = async (
         address1: customer.address1,
         address2: customer.address2,
         price: amount,
-        status: "completed",
+        status: "succeed",
         items: {
           create: products
             .filter(({ product }) => product !== null)

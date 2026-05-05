@@ -6,7 +6,11 @@ export default async function ShopNon() {
 
   return (
     <main className="pt-30 w-[72%] sm:w-[92%] max-w-6xl mx-auto ">
-      <h1 className="text-2xl text-black font-bold mb-5">商品一覧</h1>
+      <h1 className="text-2xl text-black font-bold mb-2">商品一覧</h1>
+
+      <p className="text-black mb-6 font-semibold text-base">
+        送料は¥250となります
+      </p>
       <div className="flex flex-wrap justify-between gap-x-6 gap-y-10">
         {products.map((p) => (
           <ProductCard

@@ -40,7 +40,13 @@ export default function Cart() {
       {carts.length > 0 && !isPaymentFormOpen && (
         <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
           <div className="mx-auto max-w-6xl px-4 py-4">
-            <div className="flex items-center justify-end gap-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-row items-center">
+                <p className="text-black text-xl font-bold pr-2">
+                  合計料金:¥{totalAmount}
+                </p>
+              </div>
+
               <button
                 className="bg-[#b43353] text-white rounded-full font-bold text-lg px-8 py-3 hover:bg-[#9a2a45] transition-colors"
                 onClick={() => setIsPaymentFormOpen(true)}

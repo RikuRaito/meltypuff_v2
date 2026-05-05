@@ -9,6 +9,12 @@ enum CouponType {
     PERCENT_OFF
 }
 
+enum PaymentStatus {
+    COMPLETED
+    FAILED
+    SHIPPED
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -61,6 +67,7 @@ model Contact {
 
 model Payment {
   id Int @id @default(autoincrement())
+  uuid String @unique @default(uuid())
   name String
   email String
   phone String
@@ -70,7 +77,7 @@ model Payment {
   price Int
   coupon String?
   createdAt DateTime @default(now()) @map("created_at")
-  status String
+  status PaymentStatus 
   
   // リレーション: 1つのPaymentに複数のPaymentItemが紐付く
   items PaymentItem[]
