@@ -22,14 +22,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith("/shop")) {
+  if (pathname.startsWith("/shop") && process.env.NODE_ENV === "production") {
+    let sessionId = request.cookies.get("session_id")?.value;
+    const response = NextResponse.next();
+
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      response.cookies.set("session_id", sessionId, {
+        maxAge: 60 * 30, //30分
+      });
+    }
     fetch(new URL("/api/pv", request.url), {
       method: "POST",
-      body: JSON.stringify({ path: pathname }),
+      body: JSON.stringify({ path: pathname, sessionId: sessionId }),
       headers: { "Content-Type": "application/json" },
     });
+    return response;
   }
-  return NextResponse.next();
 }
 
 export const config = {
