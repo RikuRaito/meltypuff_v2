@@ -24,6 +24,7 @@ export default function PaymentCard({ payment }: PaymentCardProps) {
   const [changeStatusConfirmation, setChangeStatusConfirmation] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const router = useRouter();
 
   const handleChangeStatus = async (uuid: string) => {
@@ -110,14 +111,19 @@ export default function PaymentCard({ payment }: PaymentCardProps) {
             className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setChangeStatusConfirmation(false)}
           />
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 shadow-xl text-center">
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 shadow-xl text-center w-[90%] sm:w-auto">
             <p className="text-black font-bold text-lg mb-2">
               ステータスを変更しますか？
             </p>
             <p className="text-black font-bold mb-3 text-lg">
               「{payment.uuid}」の注文を発送済みにします
             </p>
-            <div className="flex gap-3 justify-center">
+            {isError === true && (
+              <p className="text-red-500 font-bold text-lg mb-3">
+                エラーが発生しました
+              </p>
+            )}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => setChangeStatusConfirmation(false)}
                 className="border border-gray-300 text-gray-600 px-6 py-2 rounded-full font-semibold"
