@@ -2,7 +2,7 @@
 import { SquareClient, SquareEnvironment } from "square";
 import { prisma } from "@/lib/prisma";
 import { getNonProductsById } from "@/lib/api/products";
-import { sendConfirmationEmail } from "./email";
+import { notifyOrderToAdmin, sendConfirmationEmail } from "./email";
 
 const client = new SquareClient({
   token: process.env.SQUARE_ACCESS_TOKEN!,
@@ -73,6 +73,7 @@ export const handleCheckout = async (
     });
 
     await sendConfirmationEmail(customer.email, payment.uuid);
+    await notifyOrderToAdmin(payment.uuid, amount, customer.name);
 
     return { success: true, uuid: payment.uuid };
   } catch (err) {

@@ -12,6 +12,8 @@ export async function middleware(request: NextRequest) {
     const cookies = request.cookies.getAll();
     const hasSessionCookie = cookies.some(
       (cookie) =>
+        cookie.name.includes("authjs.session-token") ||
+        cookie.name.includes("__Secure-authjs.session-token") ||
         cookie.name.includes("next-auth.session-token") ||
         cookie.name.includes("__Secure-next-auth.session-token"),
     );
