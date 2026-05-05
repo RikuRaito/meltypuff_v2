@@ -5,9 +5,15 @@ interface QtySelectProps {
   qty: number;
   onChange: (n: number) => void;
   size?: "sm" | "default";
+  qtySize?: number;
 }
 
-export const QtySelect = ({ qty, onChange, size = "default" }: QtySelectProps) => {
+export const QtySelect = ({
+  qty,
+  onChange,
+  size = "default",
+  qtySize = 10,
+}: QtySelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropUp, setDropUp] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -20,9 +26,10 @@ export const QtySelect = ({ qty, onChange, size = "default" }: QtySelectProps) =
     setIsOpen(true);
   };
 
-  const buttonClass = size === "sm"
-    ? "w-full px-2 py-1 border border-gray-300 rounded text-black font-semibold text-xs"
-    : "w-full px-3 py-2 border border-gray-300 rounded text-black font-semibold";
+  const buttonClass =
+    size === "sm"
+      ? "w-full px-2 py-1 border border-gray-300 rounded text-black font-semibold text-xs"
+      : "w-full px-3 py-2 border border-gray-300 rounded text-black font-semibold";
 
   return (
     <div className="relative">
@@ -40,14 +47,17 @@ export const QtySelect = ({ qty, onChange, size = "default" }: QtySelectProps) =
             onClick={() => setIsOpen(false)}
           />
           <ul
-            className={`absolute z-20 w-24 bg-white border border-gray-300 rounded shadow-xl ${
+            className={`absolute z-20 w-24 bg-white border border-gray-300 rounded shadow-xl overflow-y-auto max-h-70 ${
               dropUp ? "bottom-full mb-1" : "top-full mt-1"
             }`}
           >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
               <li
                 key={n}
-                onClick={() => { onChange(n); setIsOpen(false); }}
+                onClick={() => {
+                  onChange(n);
+                  setIsOpen(false);
+                }}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black"
               >
                 {n}
