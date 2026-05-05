@@ -2,6 +2,7 @@
 import { SquareClient, SquareEnvironment } from "square";
 import { prisma } from "@/lib/prisma";
 import { getNonProductsById } from "@/lib/api/products";
+import { sendConfirmationEmail } from "./email";
 
 const client = new SquareClient({
   token: process.env.SQUARE_ACCESS_TOKEN!,
@@ -24,6 +25,7 @@ export const handleCheckout = async (
   cartItems: { id: number; qty: number }[],
 ) => {
   try {
+    console.log("customer:", customer);
     const response = await client.payments.create({
       sourceId: token,
       idempotencyKey: crypto.randomUUID(),
@@ -44,7 +46,7 @@ export const handleCheckout = async (
       }),
     );
 
-    await prisma.payment.create({
+    const payment = await prisma.payment.create({
       data: {
         name: customer.name,
         email: customer.email,
@@ -53,7 +55,7 @@ export const handleCheckout = async (
         address1: customer.address1,
         address2: customer.address2,
         price: amount,
-        status: "succeed",
+        status: "COMPLETED",
         items: {
           create: products
             .filter(({ product }) => product !== null)
@@ -70,7 +72,9 @@ export const handleCheckout = async (
       },
     });
 
-    return { success: true };
+    sendConfirmationEmail(customer.email, payment.uuid);
+
+    return { success: true, uuid: payment.uuid };
   } catch (err) {
     console.error("決済エラー:", err);
     return { success: false, error: "決済に失敗しました" };

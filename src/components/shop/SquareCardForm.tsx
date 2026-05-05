@@ -11,6 +11,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
   const initializedRef = useRef(false);
   const cardRef = useRef<SquareCard | null>(null);
   const [isPaymentSucceed, setIsPaymentSucceed] = useState(false);
+  const [paymentUuid, setPaymentUuid] = useState<string | null>(null);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -78,6 +79,9 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
         cartItems,
       );
       if (res?.success) {
+        if (res.success && res.uuid) {
+          setPaymentUuid(res.uuid);
+        }
         setIsPaymentSucceed(true);
         localStorage.removeItem("meltypuff_cart");
         window.dispatchEvent(new Event("cartUpdated"));
@@ -110,6 +114,9 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
     return (
       <div className="text-center py-8">
         <p className="text-black font-bold text-xl mb-2">決済が完了しました</p>
+        <p className="text-black font-bold text-xl mb-2">
+          注文ID:{paymentUuid}
+        </p>
         <p className="text-gray-600">ご注文ありがとうございました。</p>
       </div>
     );
@@ -143,6 +150,9 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
             className={inputClass}
           />
         </div>
+        <p className="text-black text-base font-medium pl-3">
+          配送先住所の入力をしてください
+        </p>
         <input
           placeholder="郵便番号（ハイフンなし）"
           value={zipCode}

@@ -8,7 +8,7 @@ export type Payment = {
   address2: string;
   price: number;
   coupon: string;
-  status: string;
+  status: PaymentStatus;
   createdAt: Date;
   item: PaymentItem[];
 };
@@ -18,3 +18,5 @@ export type PaymentItem = {
   displayName: string;
   quantity: number;
 };
+
+export type PaymentStatus = "COMPLETED" | "FAILED" | "SHIPPED";
