@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -21,9 +22,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // /shop/* では何もしない（認証不要）
-  // 将来的にヘッダーを変更する場合は、ここで処理を追加可能
-
+  if (pathname.startsWith("/shop")) {
+    fetch(new URL("/api/pv", request.url), {
+      method: "POST",
+      body: JSON.stringify({ path: pathname }),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   return NextResponse.next();
 }
 
