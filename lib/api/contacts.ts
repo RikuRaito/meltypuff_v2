@@ -1,5 +1,9 @@
 "use server";
 import { prisma } from "../prisma";
+import {
+  sendContactConfirmation,
+  notifyContactToAdmin,
+} from "../actions/email";
 
 type ContactInput = {
   name: string;
@@ -38,13 +42,16 @@ export const submitContact = async (
       };
     }
 
-    await prisma.contact.create({
+    const res = await prisma.contact.create({
       data: {
         name: name,
         email: email,
         content: content,
       },
     });
+
+    sendContactConfirmation(email, name, content);
+    notifyContactToAdmin(String(res.id), res.uuid, name, email, content);
 
     return {
       success: true,
