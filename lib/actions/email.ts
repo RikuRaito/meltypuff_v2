@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendConfirmationEmail = async (to: string, paymentId: string) => {
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "noreply@meltypuff.com",
     to: to,
     subject: "【Melty Puff】ご注文ありがとうございます",
     html: `
@@ -41,7 +41,7 @@ export const notifyOrderToAdmin = async (
   customerName: string,
 ) => {
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "noreply@meltypuff.com",
     to: "vape59336@gmail.com",
     subject: "【Melty Puff】新しい注文が入りました",
     html: `
