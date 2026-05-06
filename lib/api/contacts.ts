@@ -55,7 +55,7 @@ export const submitContact = async (
 
     return {
       success: true,
-      message: "お問い合わせを受け付けました。担当者よりご連絡いたします。",
+      message: "お問い合わせを受け付けました。\n担当者よりご連絡いたします。",
     };
   } catch (error) {
     console.error("お問い合わせ内容保存中にエラーが発生しました。", error);
