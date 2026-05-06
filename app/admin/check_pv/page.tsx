@@ -14,7 +14,10 @@ export default async function CheckPv() {
     <div className="min-h-screen bg-gray-50 pt-15 p-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">PV数確認</h1>
-        <PvGraph pvData={allPvData.data} />
+        <div className="">
+          <p className="font-bold text-2xl text-black mb-3">日別PV数</p>
+          <PvGraph pvData={allPvData.data} />
+        </div>
       </div>
     </div>
   );
