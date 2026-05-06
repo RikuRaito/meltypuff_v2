@@ -60,6 +60,7 @@ model Admin {
 
 model Contact {
   id Int @id @default(autoincrement())
+  uuid String @unique @default(uuid())
   name String @default("")
   email String
   content String

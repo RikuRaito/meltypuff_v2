@@ -83,9 +83,8 @@ const FAQ_CATEGORIES: FAQCategory[] = [
 ];
 
 export default function Contact() {
-  // ジャンルIDとFAQインデックスの組み合わせで管理
-  // 例: "0-1" = ジャンル0のFAQ 1番目
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
   const toggleFAQ = (categoryIndex: number, faqIndex: number) => {
     const key = `${categoryIndex}-${faqIndex}`;
@@ -94,6 +93,19 @@ export default function Contact() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-12 md:px-8">
+      {modalMessage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setModalMessage(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-8 shadow-xl text-center w-[90%] max-w-sm"
+            onClick={() => setModalMessage(null)}
+          >
+            <p className="text-black font-semibold text-lg whitespace-pre-line">{modalMessage}</p>
+          </div>
+        </div>
+      )}
       <h1 className="mt-15 mb-7 text-2xl font-bold text-black md:text-3xl text-center">
         お問い合わせ
       </h1>
@@ -168,14 +180,11 @@ export default function Contact() {
               action={async (formData: FormData) => {
                 const result = await submitContact(formData);
                 if (result.success) {
-                  alert(result.message);
-                  // フォームをリセット
-                  const form = document.querySelector(
-                    "form",
-                  ) as HTMLFormElement;
+                  setModalMessage(result.message ?? "送信が完了しました");
+                  const form = document.querySelector("form") as HTMLFormElement;
                   form?.reset();
                 } else {
-                  alert(result.error);
+                  setModalMessage(result.error ?? "送信に失敗しました");
                 }
               }}
             >

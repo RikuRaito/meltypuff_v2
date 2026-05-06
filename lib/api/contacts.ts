@@ -1,5 +1,9 @@
 "use server";
 import { prisma } from "../prisma";
+import {
+  sendContactConfirmation,
+  notifyContactToAdmin,
+} from "../actions/email";
 
 type ContactInput = {
   name: string;
@@ -38,7 +42,7 @@ export const submitContact = async (
       };
     }
 
-    await prisma.contact.create({
+    const res = await prisma.contact.create({
       data: {
         name: name,
         email: email,
@@ -46,9 +50,12 @@ export const submitContact = async (
       },
     });
 
+    sendContactConfirmation(email, name, content);
+    notifyContactToAdmin(String(res.id), res.uuid, name, email, content);
+
     return {
       success: true,
-      message: "お問い合わせを受け付けました。担当者よりご連絡いたします。",
+      message: "お問い合わせを受け付けました。\n担当者よりご連絡いたします。",
     };
   } catch (error) {
     console.error("お問い合わせ内容保存中にエラーが発生しました。", error);
