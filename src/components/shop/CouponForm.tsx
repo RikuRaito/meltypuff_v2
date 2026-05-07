@@ -22,7 +22,7 @@ export const CouponForm = ({
     const res = await applyCoupon(couponCode);
     if (res.success && res.coupon) {
       const { type, discountRate } = res.coupon;
-      let discounted: number;
+      let discounted: number = totalAmount;
       if (type === "PERCENT_OFF") {
         discounted = Math.floor(totalAmount * (1 - discountRate / 100));
       } else if (type === "AMOUNT_OFF") {
