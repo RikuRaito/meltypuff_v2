@@ -8,6 +8,10 @@ const NAV_ITEMS = [
     label: "注文一覧",
   },
   {
+    href: "/admin/manage_coupons",
+    label: "クーポン管理",
+  },
+  {
     href: "/admin/check_pv",
     label: "PV数確認",
   },

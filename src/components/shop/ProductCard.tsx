@@ -17,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="w-32 sm:w-[250px] relative border border-gray-600 rounded-lg pb-3 ">
       <Link href={`/shop/shop-non/${product.id}`}>
-        <div className="relative w-full aspect-square mb-3 overflow-hidden">
+        <div className="relative w-full aspect-square mb-3 overflow-hidden rounded-t-lg">
           <Image
             src={product.imagePath[0]}
             alt={product.displayName}
