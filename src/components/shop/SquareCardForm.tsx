@@ -13,6 +13,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
   const [isPaymentSucceed, setIsPaymentSucceed] = useState(false);
   const [paymentUuid, setPaymentUuid] = useState<string | null>(null);
   const [isProcessing, setIsProccessing] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -70,7 +71,6 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
       if (result.status === "OK") {
         const res = await handleCheckout(
           result.token!,
-          amount,
           {
             name,
             email,
@@ -80,6 +80,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
             address2,
           },
           cartItems,
+          couponCode,
         );
         if (res?.success) {
           if (res.success && res.uuid) {

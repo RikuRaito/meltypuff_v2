@@ -21,3 +21,20 @@ export const AddNewCoupon = async (data: Prisma.CouponCreateInput) => {
     throw err;
   }
 };
+
+export const ApplyCoupon = async (code: string) => {
+  try {
+    const data = await prisma.coupon.findUnique({
+      where: { code: code },
+    });
+    if (!data?.isActive) {
+      return { success: false };
+    }
+    const type = data?.type;
+    const discountRate = data?.discountRate;
+    return { success: true, apply: { type: type, discountRate: discountRate } };
+  } catch (err) {
+    console.error("クーポン適用処理中にエラーが発生しました", err);
+    throw err;
+  }
+};

@@ -18,14 +18,39 @@ interface CustomerInfo {
   address2: string;
 }
 
+const SHIPPING_FEE = 250;
+
 export const handleCheckout = async (
   token: string,
-  amount: number,
   customer: CustomerInfo,
   cartItems: { id: number; qty: number }[],
+  couponCode?: string,
 ) => {
   try {
-    console.log("customer:", customer);
+    const products = await Promise.all(
+      cartItems.map(async (item) => {
+        const product = await getNonProductsById(item.id);
+        return { product, qty: item.qty };
+      }),
+    );
+
+    let amount = products.reduce((sum, { product, qty }) => {
+      return sum + (product?.price ?? 0) * qty;
+    }, SHIPPING_FEE);
+
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({
+        where: { code: couponCode, isActive: true },
+      });
+      if (coupon) {
+        if (coupon.type === "PERCENT_OFF") {
+          amount = Math.floor(amount * (1 - Number(coupon.discountRate) / 100));
+        } else if (coupon.type === "AMOUNT_OFF") {
+          amount = Math.max(0, amount - Number(coupon.discountRate));
+        }
+      }
+    }
+
     const response = await client.payments.create({
       sourceId: token,
       idempotencyKey: crypto.randomUUID(),
@@ -38,13 +63,6 @@ export const handleCheckout = async (
     if (!response.payment?.id) {
       return { success: false, error: "決済に失敗しました" };
     }
-
-    const products = await Promise.all(
-      cartItems.map(async (item) => {
-        const product = await getNonProductsById(item.id);
-        return { product, qty: item.qty };
-      }),
-    );
 
     const payment = await prisma.payment.create({
       data: {
