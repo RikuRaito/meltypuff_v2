@@ -3,17 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { handleCheckout } from "@/lib/actions/checkout";
 
 interface SquareCardFormProps {
-  amount: number;
   cartItems: { id: number; qty: number }[];
+  couponCode?: string;
 }
 
-export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
+export const SquareCardForm = ({
+  cartItems,
+  couponCode,
+}: SquareCardFormProps) => {
   const initializedRef = useRef(false);
   const cardRef = useRef<SquareCard | null>(null);
   const [isPaymentSucceed, setIsPaymentSucceed] = useState(false);
   const [paymentUuid, setPaymentUuid] = useState<string | null>(null);
   const [isProcessing, setIsProccessing] = useState(false);
-  const [couponCode, setCouponCode] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -80,7 +82,7 @@ export const SquareCardForm = ({ amount, cartItems }: SquareCardFormProps) => {
             address2,
           },
           cartItems,
-          couponCode,
+          couponCode ?? undefined,
         );
         if (res?.success) {
           if (res.success && res.uuid) {

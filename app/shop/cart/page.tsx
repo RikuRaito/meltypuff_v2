@@ -3,15 +3,18 @@ import { useCart } from "@/src/hooks/useCart";
 import { CartGrid } from "@/src/components/shop/CartGrid";
 import { useState } from "react";
 import { SquareCardForm } from "@/src/components/shop/SquareCardForm";
+import { CouponForm } from "@/src/components/shop/CouponForm";
 
 export default function Cart() {
   const { carts, cartsWithData, handleRemoveItem } = useCart();
   const [isPaymentFormOpen, setIsPaymentFormOpen] = useState<boolean>(false);
-  const [amount, setAmount] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
 
-  const totalAmount = cartsWithData.reduce((sum, item) => {
+  const baseAmount = cartsWithData.reduce((sum, item) => {
     return sum + Number(item.price) * item.qty;
   }, 250);
+  const [discountedAmount, setDiscountedAmount] = useState<number | null>(null);
+  const totalAmount = discountedAmount ?? baseAmount;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -35,6 +38,15 @@ export default function Cart() {
             カートに商品がありません。
           </div>
         )}
+        {carts.length > 0 && (
+          <div className="mt-6">
+            <CouponForm
+              totalAmount={baseAmount}
+              setTotalAmount={setDiscountedAmount}
+              onCouponApplied={setCouponCode}
+            />
+          </div>
+        )}
       </main>
 
       {carts.length > 0 && !isPaymentFormOpen && (
@@ -43,7 +55,7 @@ export default function Cart() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-row items-center">
                 <p className="text-black text-xl font-bold pr-2">
-                  合計料金:¥{totalAmount}
+                  合計料金:¥{totalAmount.toLocaleString()}
                 </p>
               </div>
 
@@ -65,8 +77,8 @@ export default function Cart() {
           />
           <div className="fixed overflow-y-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 w-[90%] max-w-sm max-h-[90vh]">
             <SquareCardForm
-              amount={totalAmount}
               cartItems={carts}
+              couponCode={couponCode}
             />
           </div>
         </>
