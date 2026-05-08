@@ -6,13 +6,14 @@ import { SquareCardForm } from "@/src/components/shop/SquareCardForm";
 import { CouponForm } from "@/src/components/shop/CouponForm";
 
 export default function Cart() {
-  const { carts, cartsWithData, handleRemoveItem } = useCart();
+  const { carts, cartsWithData, handleRemoveItem, fee, isLoadingAmount } =
+    useCart();
   const [isPaymentFormOpen, setIsPaymentFormOpen] = useState<boolean>(false);
   const [couponCode, setCouponCode] = useState("");
 
   const baseAmount = cartsWithData.reduce((sum, item) => {
     return sum + Number(item.price) * item.qty;
-  }, 250);
+  }, fee);
   const [discountedAmount, setDiscountedAmount] = useState<number | null>(null);
   const totalAmount = discountedAmount ?? baseAmount;
 
@@ -54,9 +55,32 @@ export default function Cart() {
           <div className="mx-auto max-w-6xl px-4 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-row items-center">
-                <p className="text-black text-xl font-bold pr-2">
-                  合計料金:¥{totalAmount.toLocaleString()}
-                </p>
+                {isLoadingAmount ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-gray-500 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                ) : (
+                  <p className="text-black text-xl font-bold pr-2">
+                    合計料金:¥{totalAmount.toLocaleString()}
+                  </p>
+                )}
               </div>
 
               <button

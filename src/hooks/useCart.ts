@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/types/CartItem";
+import { getShippingFee } from "@/lib/actions/shippingFee";
 
 interface CartsWithData {
   id: number;
@@ -13,6 +14,9 @@ interface CartsWithData {
 export const useCart = () => {
   const [carts, setCarts] = useState<CartItem[]>([]);
   const [cartsWithData, setCartsWithData] = useState<CartsWithData[]>([]);
+  const [fee, setFee] = useState<number>(250);
+  //商品データと送料データの取得が終わるまでぐるぐるさせる
+  const [isLoadingAmount, setIsLoadingAmount] = useState(false);
 
   useEffect(() => {
     const loadCartData = () => {
@@ -80,6 +84,7 @@ export const useCart = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoadingAmount(true);
       if (carts.length === 0) {
         setCartsWithData([]);
         return;
@@ -99,7 +104,17 @@ export const useCart = () => {
       );
       setCartsWithData(productsData);
     };
+
+    const getFeeData = async () => {
+      const res = await getShippingFee();
+      if (res.success) {
+        setFee(res.fee?.fee ?? 250);
+      }
+      setIsLoadingAmount(false);
+    };
+
     fetchData();
+    getFeeData();
   }, [carts]);
 
   return {
@@ -107,5 +122,7 @@ export const useCart = () => {
     handleChangeQty,
     handleRemoveItem,
     cartsWithData,
+    fee,
+    isLoadingAmount,
   };
 };
