@@ -18,8 +18,6 @@ interface CustomerInfo {
   address2: string;
 }
 
-const SHIPPING_FEE = 250;
-
 export const handleCheckout = async (
   token: string,
   customer: CustomerInfo,
@@ -27,6 +25,7 @@ export const handleCheckout = async (
   couponCode?: string,
 ) => {
   try {
+    const shippingFee = await prisma.shipping_Fee.findFirst();
     const products = await Promise.all(
       cartItems.map(async (item) => {
         const product = await getNonProductsById(item.id);
@@ -36,7 +35,7 @@ export const handleCheckout = async (
 
     let amount = products.reduce((sum, { product, qty }) => {
       return sum + (product?.price ?? 0) * qty;
-    }, SHIPPING_FEE);
+    }, shippingFee?.fee ?? 250);
 
     if (couponCode) {
       const coupon = await prisma.coupon.findUnique({

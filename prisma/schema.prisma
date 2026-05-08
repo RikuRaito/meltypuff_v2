@@ -112,6 +112,11 @@ model PageView {
     @@map("page_view")
 }
 
+model Shipping_Fee {
+    id Int @id @default(autoincrement())
+    fee Int
+}
+
 model RegularCustomer {
   id Int @id @default(autoincrement())
   name String
