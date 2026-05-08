@@ -1,14 +1,55 @@
 "use client";
 import { Coupon, CouponType } from "@prisma/client";
 import { useState } from "react";
+import { ChangeActiveCoupon } from "@/lib/actions/coupons";
+import { useRouter } from "next/navigation";
 
 export const CouponCard = ({ coupon }: { coupon: Coupon }) => {
   const [isChangeActiveOpen, setIsChangeActiveOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleChangeActive = async () => {
+    setIsLoading(true);
+    try {
+      await ChangeActiveCoupon(coupon.code);
+      setIsChangeActiveOpen(false);
+      router.refresh();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (isChangeActiveOpen) {
     return (
       <>
-        <div className="fixed" />
+        <div
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsChangeActiveOpen(false)}
+        />
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl p-6 shadow-xl text-center w-[90%] max-w-sm">
+          <p className="text-black font-bold text-lg mb-2">
+            ステータスを変更しますか？
+          </p>
+          <p className="text-gray-500 text-sm mb-6">
+            「{coupon.code}」を{coupon.isActive ? "無効" : "有効"}にします
+          </p>
+          <div className="flex justify-between">
+            <button
+              onClick={() => setIsChangeActiveOpen(false)}
+              className="border border-gray-300 text-gray-600 px-6 py-2 rounded-full font-semibold"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={handleChangeActive}
+              disabled={isLoading}
+              className="bg-[#b43353] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#9a2a45] disabled:bg-gray-400"
+            >
+              {isLoading ? "処理中..." : "確定"}
+            </button>
+          </div>
+        </div>
       </>
     );
   }
