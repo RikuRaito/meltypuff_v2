@@ -38,3 +38,22 @@ export const ApplyCoupon = async (code: string) => {
     throw err;
   }
 };
+
+export const ChangeActiveCoupon = async (code: string) => {
+  try {
+    const existCoupon = await prisma.coupon.findUnique({
+      where: { code: code },
+    });
+
+    if (!existCoupon) return { success: false };
+
+    await prisma.coupon.update({
+      where: { code },
+      data: { isActive: !existCoupon.isActive },
+    });
+    return { success: true };
+  } catch (err) {
+    console.error("クーポンの有効/無効切り替え時にエラーが発生しました", err);
+    throw err;
+  }
+};

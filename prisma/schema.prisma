@@ -48,7 +48,7 @@ model Coupon {
   id Int @id @default(autoincrement())
   code String @unique
   type CouponType
-  discountRate Decimal @map("discount_rate")
+  discountRate Int @map("discount_rate")
   isActive Boolean @default(true) @map("is_active")
 }
 
