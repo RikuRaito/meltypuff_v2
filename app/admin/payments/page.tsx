@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import PaymentsServer, { PaymentWithItems } from "@/lib/actions/payments";
 import PaymentCard from "@/src/components/admin/PaymentCard";
+import { ShippingFeeModal } from "@/src/components/admin/ShippingFeeModal";
 
 export default async function AdminPayments() {
   const session = await auth();
@@ -19,7 +20,10 @@ export default async function AdminPayments() {
   return (
     <div className="min-h-screen bg-gray-50 pt-15 p-8">
       <div className="mx-auto max-w-7xl">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">注文一覧</h1>
+        <div className="flex flex-row justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">注文一覧</h1>
+          <ShippingFeeModal />
+        </div>
         {payments.length === 0 ? (
           <div className="rounded-lg bg-white p-8 text-center shadow">
             <p className="text-gray-500">支払い情報がありません</p>
