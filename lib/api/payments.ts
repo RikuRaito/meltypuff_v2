@@ -3,7 +3,7 @@ import { Payment } from "@/src/types/payments";
 import { prisma } from "../prisma";
 import { PaymentStatus } from "@prisma/client";
 
-type PaymentFilter = PaymentStatus | "ALL";
+export type PaymentFilter = PaymentStatus | "ALL";
 
 export const getPaymentsData = async (filter: PaymentFilter = "COMPLETED") => {
   try {

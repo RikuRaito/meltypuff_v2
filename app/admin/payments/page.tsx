@@ -3,16 +3,25 @@ import { redirect } from "next/navigation";
 import PaymentsServer, { PaymentWithItems } from "@/lib/actions/payments";
 import PaymentCard from "@/src/components/admin/PaymentCard";
 import { ShippingFeeModal } from "@/src/components/admin/ShippingFeeModal";
+import { PaymentFilter } from "@/lib/api/payments";
+import { Filter } from "@/src/components/admin/Filter";
 
-export default async function AdminPayments() {
+export default async function AdminPayments({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: PaymentFilter }>;
+}) {
+  const { status } = await searchParams;
   const session = await auth();
   if (!session) {
     redirect("/admin/login");
   }
 
+  const filter: PaymentFilter = status ?? "ALL";
+
   let payments: PaymentWithItems[] = [];
   try {
-    payments = await PaymentsServer();
+    payments = await PaymentsServer(filter);
   } catch (error) {
     console.error("支払い情報のレンダリングに失敗しました(at.page.tsx)", error);
   }
@@ -22,6 +31,7 @@ export default async function AdminPayments() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-row justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">注文一覧</h1>
+          <Filter />
           <ShippingFeeModal />
         </div>
         {payments.length === 0 ? (
@@ -31,7 +41,10 @@ export default async function AdminPayments() {
         ) : (
           <div className="flex flex-col gap-4">
             {payments.map((payment) => (
-              <PaymentCard key={payment.id} payment={payment} />
+              <PaymentCard
+                key={payment.id}
+                payment={payment}
+              />
             ))}
           </div>
         )}
