@@ -10,3 +10,16 @@ export const getShippingFee = async () => {
     throw err;
   }
 };
+
+export const updateShippingFee = async (newFee: number) => {
+  try {
+    const res = await prisma.shipping_Fee.update({
+      where: { id: 1 },
+      data: { fee: newFee },
+    });
+    return { success: true };
+  } catch (err) {
+    console.error("送料情報の更新中にエラーが発生しました", err);
+    throw err;
+  }
+};
