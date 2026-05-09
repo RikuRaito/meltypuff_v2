@@ -13,7 +13,7 @@ export const getPaymentsData = async (filter: PaymentFilter = "COMPLETED") => {
         items: true, // PaymentItemも取得
       },
       orderBy: {
-        id: "asc",
+        id: "desc",
       },
     });
     return payments;
