@@ -1,7 +1,9 @@
 import { getPaymentsData } from "@/lib/api/payments";
 import { Prisma } from "@prisma/client";
 
-export type PaymentWithItems = Prisma.PaymentGetPayload<{ include: { items: true } }>;
+export type PaymentWithItems = Prisma.PaymentGetPayload<{
+  include: { items: true };
+}>;
 
 export default async function PaymentsServer(): Promise<PaymentWithItems[]> {
   try {

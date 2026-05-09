@@ -8,7 +8,7 @@ export type Payment = {
   address2: string;
   price: number;
   coupon: string;
-  status: PaymentStatus;
+  status: Payment;
   createdAt: Date;
   item: PaymentItem[];
 };
