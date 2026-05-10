@@ -103,6 +103,7 @@ export default function Cart() {
             <SquareCardForm
               cartItems={carts}
               couponCode={couponCode}
+              totalAmount={totalAmount}
             />
           </div>
         </>
