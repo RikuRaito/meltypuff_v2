@@ -1,15 +1,19 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { handleCheckout } from "@/lib/actions/checkout";
+import { applePay } from "square";
 
 interface SquareCardFormProps {
   cartItems: { id: number; qty: number }[];
   couponCode?: string;
+  //Apple Pay対応のための合計金額
+  totalAmount: number;
 }
 
 export const SquareCardForm = ({
   cartItems,
   couponCode,
+  totalAmount,
 }: SquareCardFormProps) => {
   const initializedRef = useRef(false);
   const cardRef = useRef<SquareCard | null>(null);
@@ -25,6 +29,15 @@ export const SquareCardForm = ({
   const [address2, setAddress2] = useState("");
   const [error, setError] = useState("");
 
+  const customerRef = useRef({
+    name: "",
+    email: "",
+    phone: "",
+    zipCode: "",
+    address1: "",
+    address2: "",
+  });
+
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
@@ -39,9 +52,24 @@ export const SquareCardForm = ({
       const card = await payments.card();
       await card.attach("#card-container");
       cardRef.current = card;
+
+      //Appley Pay対応
+      const applePayRequest = payments.paymentRequest({
+        countryCode: "JP",
+        currencyCode: "JPY",
+        total: { amount: String(totalAmount), label: "Melty Puff" },
+      });
+      const applePay = await payments.applePay(applePayRequest);
+      await applePay.attach("#apple-pay-button");
     };
 
     initSquare();
+
+    // @ts-expect-error Square Web Payments SDK type definition
+    applePay.addEventListener("ontokenize", async (event) => {
+      const token = event.detail.token;
+      await handleCheckout(token, customerRef.current, cartItems, couponCode);
+    });
 
     return () => {
       cardRef.current?.destroy();
@@ -146,7 +174,10 @@ export const SquareCardForm = ({
         <input
           placeholder="お名前"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            customerRef.current.name = e.target.value;
+          }}
           className={inputClass}
         />
         <div className="flex gap-2">
@@ -154,14 +185,20 @@ export const SquareCardForm = ({
             placeholder="メールアドレス"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              customerRef.current.email = e.target.value;
+            }}
             className={inputClass}
           />
           <input
             placeholder="電話番号"
             type="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              customerRef.current.phone = e.target.value;
+            }}
             className={inputClass}
           />
         </div>
@@ -171,19 +208,28 @@ export const SquareCardForm = ({
         <input
           placeholder="郵便番号（ハイフンなし）"
           value={zipCode}
-          onChange={(e) => setZipCode(e.target.value)}
+          onChange={(e) => {
+            setZipCode(e.target.value);
+            customerRef.current.zipCode = e.target.value;
+          }}
           className={inputClass}
         />
         <input
           placeholder="住所1"
           value={address1}
-          onChange={(e) => setAddress1(e.target.value)}
+          onChange={(e) => {
+            setAddress1(e.target.value);
+            customerRef.current.address1 = e.target.value;
+          }}
           className={inputClass}
         />
         <input
           placeholder="住所2（任意）"
           value={address2}
-          onChange={(e) => setAddress2(e.target.value)}
+          onChange={(e) => {
+            setAddress2(e.target.value);
+            customerRef.current.address2 = e.target.value;
+          }}
           className={inputClass}
         />
       </div>
@@ -194,6 +240,7 @@ export const SquareCardForm = ({
         id="card-container"
         className="-mb-4"
       />
+      <div id="apple-pay-button" />
       {error !== "" && (
         <div>
           <p className="text-red-500 text-xs font-light">{error}</p>
