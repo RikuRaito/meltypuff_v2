@@ -51,7 +51,7 @@ export const SquareCardForm = ({
 
     const initSquare = async () => {
       await waitForSquare();
-      const payments = window.Square.payments(
+      const payments = window.Square!.payments(
         process.env.NEXT_PUBLIC_SQUARE_APP_ID!,
         process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID!,
       );
