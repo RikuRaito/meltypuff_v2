@@ -1,5 +1,6 @@
 "use client";
-import { Coupon, CouponType } from "@prisma/client";
+import type { Coupon } from "@prisma/client";
+import { CouponType } from "@/src/types/coupon";
 import { useState } from "react";
 import { ChangeActiveCoupon } from "@/lib/actions/coupons";
 import { useRouter } from "next/navigation";
