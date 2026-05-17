@@ -3,6 +3,7 @@ import { AddCouponModal } from "@/src/components/admin/AddCouponModal";
 import { CouponCard } from "@/src/components/admin/CouponCard";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import type { Coupon } from "@prisma/client";
 
 export default async function ManageCoupons() {
   const session = await auth();
@@ -28,7 +29,7 @@ export default async function ManageCoupons() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {coupons.map((coupon) => (
+            {coupons.map((coupon: Coupon) => (
               <CouponCard
                 key={coupon.id}
                 coupon={coupon}

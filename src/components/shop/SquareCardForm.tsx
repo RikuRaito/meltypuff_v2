@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { handleCheckout } from "@/lib/actions/checkout";
-import { applePay } from "square";
 
 interface SquareCardFormProps {
   cartItems: { id: number; qty: number }[];
@@ -42,9 +41,17 @@ export const SquareCardForm = ({
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    const waitForSquare = (): Promise<void> =>
+      new Promise((resolve) => {
+        if (window.Square) { resolve(); return; }
+        const interval = setInterval(() => {
+          if (window.Square) { clearInterval(interval); resolve(); }
+        }, 100);
+      });
+
     const initSquare = async () => {
-      if (!window.Square) return;
-      const payments = window.Square.payments(
+      await waitForSquare();
+      const payments = window.Square!.payments(
         process.env.NEXT_PUBLIC_SQUARE_APP_ID!,
         process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID!,
       );
@@ -53,23 +60,24 @@ export const SquareCardForm = ({
       await card.attach("#card-container");
       cardRef.current = card;
 
-      //Appley Pay対応
-      const applePayRequest = payments.paymentRequest({
-        countryCode: "JP",
-        currencyCode: "JPY",
-        total: { amount: String(totalAmount), label: "Melty Puff" },
-      });
-      const applePay = await payments.applePay(applePayRequest);
-      await applePay.attach("#apple-pay-button");
+      try {
+        const applePayRequest = payments.paymentRequest({
+          countryCode: "JP",
+          currencyCode: "JPY",
+          total: { amount: String(totalAmount), label: "Melty Puff" },
+        });
+        const applePay = await payments.applePay(applePayRequest);
+        await applePay.attach("#apple-pay-button");
+        applePay.addEventListener("ontokenize", async (event) => {
+          const token = event.detail.token;
+          await handleCheckout(token, customerRef.current, cartItems, couponCode);
+        });
+      } catch {
+        // 開発環境など Apple Pay が使えない場合はスキップ
+      }
     };
 
     initSquare();
-
-    // @ts-expect-error Square Web Payments SDK type definition
-    applePay.addEventListener("ontokenize", async (event) => {
-      const token = event.detail.token;
-      await handleCheckout(token, customerRef.current, cartItems, couponCode);
-    });
 
     return () => {
       cardRef.current?.destroy();
