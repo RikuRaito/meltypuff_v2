@@ -41,8 +41,16 @@ export const SquareCardForm = ({
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    const waitForSquare = (): Promise<void> =>
+      new Promise((resolve) => {
+        if (window.Square) { resolve(); return; }
+        const interval = setInterval(() => {
+          if (window.Square) { clearInterval(interval); resolve(); }
+        }, 100);
+      });
+
     const initSquare = async () => {
-      if (!window.Square) return;
+      await waitForSquare();
       const payments = window.Square.payments(
         process.env.NEXT_PUBLIC_SQUARE_APP_ID!,
         process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID!,
