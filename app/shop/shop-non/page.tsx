@@ -1,7 +1,7 @@
+export const dynamic = "force-dynamic";
 import { getNonProductsInStock } from "@/lib/api/products";
 import ProductCard from "@/src/components/shop/ProductCard";
 import { getShippingFee } from "@/lib/actions/shippingFee";
-import { ShippingFeeModal } from "@/src/components/admin/ShippingFeeModal";
 
 export default async function ShopNon() {
   const products = await getNonProductsInStock();
