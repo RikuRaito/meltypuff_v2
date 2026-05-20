@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 const heroVideo = {
   src: "/hero/vape.mp4",
-  poster: "/hero/pineapple_20K.png",
+  poster: "/hero/hero_poster.jpg",
 };
 
 export default function HeroSection() {
