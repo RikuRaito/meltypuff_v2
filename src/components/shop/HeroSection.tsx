@@ -16,10 +16,10 @@ export default function HeroSection() {
         window.dispatchEvent(
           new CustomEvent("heroVisibility", {
             detail: { isVisible: entry.isIntersecting },
-          })
+          }),
         );
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (sectionRef.current) {
@@ -37,14 +37,17 @@ export default function HeroSection() {
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src={heroVideo.src}
-        poster="None"
+        poster={heroVideo.poster}
         autoPlay
         muted
         loop
         playsInline
         preload="metadata"
       />
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-black/40"
+        aria-hidden="true"
+      />
       <div className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 px-6 text-center sm:items-start sm:px-10 sm:text-left md:px-16">
         <h1 className="flex flex-col text-[clamp(2.2rem,6vw,4.5rem)] font-bold leading-tight">
           <span className="block">Melty Puffで</span>

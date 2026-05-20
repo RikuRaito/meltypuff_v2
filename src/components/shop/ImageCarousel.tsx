@@ -37,6 +37,8 @@ export default function ImageCarousel({ images }: { images: string[] }) {
                 alt={`画像${index + 1}`}
                 fill
                 className="object-contain"
+                priority={index === 0}
+                sizes="(max-width: 640) 170px, 550px"
               />
             </div>
           ))}
