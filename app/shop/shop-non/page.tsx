@@ -4,8 +4,10 @@ import ProductCard from "@/src/components/shop/ProductCard";
 import { getShippingFee } from "@/lib/actions/shippingFee";
 
 export default async function ShopNon() {
-  const products = await getNonProductsInStock();
-  const shippingFee = await getShippingFee();
+  const [products, shippingFee] = await Promise.all([
+    getNonProductsInStock(),
+    getShippingFee(),
+  ]);
 
   return (
     <main className="pt-30 w-[72%] sm:w-[92%] max-w-6xl mx-auto ">
