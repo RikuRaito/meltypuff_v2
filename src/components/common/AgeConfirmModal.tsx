@@ -2,20 +2,13 @@
 import { useEffect, useState } from "react";
 
 export default function AgeConfirmModal() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const check = async () => {
-      const confirmed = localStorage.getItem("age_confirmed");
-      if (!confirmed) setIsVisible(true);
-    };
-    check();
-  }, []);
+  const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) return null;
 
   const handleConfirm = () => {
-    localStorage.setItem("age_confirmed", "true");
+    document.cookie =
+      "age_verified=true; path=/; max-age=31536000; SameSite=Lax";
     setIsVisible(false);
   };
 
