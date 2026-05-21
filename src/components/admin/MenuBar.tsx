@@ -16,6 +16,10 @@ const NAV_ITEMS = [
     label: "PV数確認",
   },
   {
+    href: "/admin/article",
+    label: "記事管理",
+  },
+  {
     href: "/admin/make_order",
     label: "注文作成",
   },
