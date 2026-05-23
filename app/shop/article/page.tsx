@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getBlogs } from "@/lib/microcms";
 import ArticleConteiner from "@/src/components/shop/article/ArticleContainer";
 
