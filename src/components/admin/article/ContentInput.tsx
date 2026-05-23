@@ -22,8 +22,8 @@ export const ContentInput = ({ content, onChange }: Props) => {
         markdown(),
         EditorView.theme({
           "&": {
-            height: "calc(100vh - 250px)",
-            minHight: "calc(100vh - 250px)",
+            height: "100%",
+            minHeight: "100%",
             borderRadius: "4px",
             overflow: "hidden",
             border: "1px solid #d1d5db",
