@@ -44,6 +44,16 @@ export default function MenuBar() {
               </Link>
             </li>
           ))}
+          <li>
+            <a
+              href="https://4x66h4jgbp.microcms.io/apis/blogs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block font-bold text-xl rounded-md px-4 py-2 text-black hover:bg-gray-100 transition-colors"
+            >
+              記事管理
+            </a>
+          </li>
         </ul>
       </nav>
       <div className="mt-5 space-y-2 pl-6">
