@@ -16,7 +16,7 @@ export const CreateNewButton = () => {
       setErrorMessage(res.message ?? "記事の新規作成に失敗しました");
     }
     const id = res.data;
-    router.push(`/admin/article/${id}`);
+    router.push(`/admin/article/${id}?isNew=true`);
   };
 
   return (

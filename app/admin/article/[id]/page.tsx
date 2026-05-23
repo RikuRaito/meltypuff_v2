@@ -1,6 +1,31 @@
 import { getArticleById } from "@/lib/api/article";
+import { ArticleDetailContainer } from "@/src/components/admin/article/ArticleDetailContainer";
 
-export default function ArticleDetail({ params }: { params: { id: string } }) {
-  const articleData = getArticleById(Number(params.id));
-  return <div></div>;
+export default async function ArticleDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ isNew?: string }>;
+}) {
+  //クエリから情報を取得
+  const { id } = await params;
+  const articleData = await getArticleById(Number(id));
+  const resolvedSearcchParams = await searchParams;
+  const isNew = resolvedSearcchParams.isNew;
+
+  if (!articleData.data) {
+    return <div>記事が見つかりませんでした</div>;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-15 p-8">
+      <div className="mx-auto max-w-7xl justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          {isNew === "true" ? "記事新規作成" : "記事編集"}
+        </h1>
+        <ArticleDetailContainer article={articleData.data} />
+      </div>
+    </div>
+  );
 }
