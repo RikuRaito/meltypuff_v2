@@ -22,3 +22,21 @@ export const updateIsPublished = async (articleId: number) => {
     throw err;
   }
 };
+
+export const createNewArticle = async () => {
+  try {
+    const article = await prisma.article.create({
+      data: {
+        title: "",
+        content: "",
+        writtenBy: "",
+        updatedAt: new Date(),
+      },
+    });
+    return { success: true, data: article.id };
+  } catch (err) {
+    console.error("記事の新規作成に失敗しました");
+    return { success: false, message: "記事の新規作成に失敗しました" };
+    throw err;
+  }
+};
