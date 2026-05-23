@@ -1,5 +1,6 @@
 import { Article } from "@prisma/client";
 import Image from "next/image";
+import { ChangePublishedButton } from "./ChangePublishedButton";
 
 interface Props {
   article: Article;
@@ -7,7 +8,7 @@ interface Props {
 
 export const ArticleList = ({ article }: Props) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex gap-4 items-start">
+    <div className="bg-white rounded-lg shadow p-4 w-full flex gap-10 items-start">
       <div className="w-24 h-16 flex-shrink-0">
         {article.thumbnail ? (
           <Image
@@ -21,7 +22,7 @@ export const ArticleList = ({ article }: Props) => {
           </div>
         )}
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 px-3">
         <div className="flex items-center gap-2 mb-1">
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -49,6 +50,12 @@ export const ArticleList = ({ article }: Props) => {
             更新: {new Date(article.updatedAt).toLocaleDateString("ja-JP")}
           </span>
         </div>
+      </div>
+      <div className="shrink-0 flex items-center">
+        <ChangePublishedButton
+          articleId={article.id}
+          isPublished={article.isPublished}
+        />
       </div>
     </div>
   );
