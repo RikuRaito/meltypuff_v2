@@ -1,9 +1,15 @@
-import { Article } from "@prisma/client";
+import { MicroCMSListContent } from "microcms-js-sdk";
 import { ArticleList } from "./ArticleList";
 import { CreateNewButton } from "./CreateNewButton";
 
+type BlogContent = MicroCMSListContent & {
+  title: string;
+  content: string;
+  thumbnail?: { url: string };
+};
+
 interface Props {
-  articles: Article[];
+  articles: BlogContent[];
 }
 
 export const ArticleContainer = ({ articles }: Props) => {

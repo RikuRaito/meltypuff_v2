@@ -1,19 +1,28 @@
-import { Article } from "@prisma/client";
 import Image from "next/image";
-import { ChangePublishedButton } from "./ChangePublishedButton";
+import { MicroCMSListContent } from "microcms-js-sdk";
+
+type BlogContent = MicroCMSListContent & {
+  title: string;
+  content: string;
+  thumbnail?: { url: string };
+};
 
 interface Props {
-  article: Article;
+  article: BlogContent;
 }
 
 export const ArticleList = ({ article }: Props) => {
+  const plainText = article.content.replace(/<[^>]*>/g, "");
+
   return (
     <div className="bg-white rounded-lg shadow p-4 w-full flex gap-10 items-start">
       <div className="w-24 h-16 flex-shrink-0">
         {article.thumbnail ? (
           <Image
-            src={article.thumbnail}
+            src={article.thumbnail.url}
             alt={article.title}
+            width={96}
+            height={64}
             className="w-full h-full object-cover rounded"
           />
         ) : (
@@ -23,39 +32,17 @@ export const ArticleList = ({ article }: Props) => {
         )}
       </div>
       <div className="flex-1 min-w-0 px-3">
-        <div className="flex items-center gap-2 mb-1">
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-              article.isPublished
-                ? "bg-green-100 text-green-700"
-                : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            {article.isPublished ? "公開" : "非公開"}
-          </span>
-          <span className="text-xs text-gray-400">#{article.id}</span>
-        </div>
+        <span className="text-xs text-gray-400">#{article.id}</span>
         <h3 className="text-base font-semibold text-gray-900 truncate">
           {article.title}
         </h3>
         <p className="text-sm text-gray-500 mt-1">
-          {article.content.slice(0, 50)}...
+          {plainText.slice(0, 50)}...
         </p>
         <div className="flex gap-4 mt-2 text-xs text-gray-400">
-          <span>{article.writtenBy}</span>
-          <span>
-            作成: {new Date(article.createdAt).toLocaleDateString("ja-JP")}
-          </span>
-          <span>
-            更新: {new Date(article.updatedAt).toLocaleDateString("ja-JP")}
-          </span>
+          <span>作成: {new Date(article.createdAt).toLocaleDateString("ja-JP")}</span>
+          <span>更新: {new Date(article.updatedAt).toLocaleDateString("ja-JP")}</span>
         </div>
-      </div>
-      <div className="shrink-0 flex items-center">
-        <ChangePublishedButton
-          articleId={article.id}
-          isPublished={article.isPublished}
-        />
       </div>
     </div>
   );
